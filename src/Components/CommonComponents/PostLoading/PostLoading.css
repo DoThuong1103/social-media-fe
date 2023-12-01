@@ -1,0 +1,34 @@
+.gradient-div {
+  top: 0;
+  left: 0;
+  background: #fff;
+  transform: translate(-50%, -50%) rotate(45deg);
+  animation: moveAnimation 1s linear infinite;
+}
+
+.gradient-div-1 {
+  top: 0;
+  left: 0;
+  background: #fff;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  animation: moveAnimation 1s linear infinite;
+}
+
+.gradient-div-2 {
+  top: 0;
+  left: 0;
+  background: #fff;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  animation: moveAnimation 2s linear infinite;
+}
+
+@keyframes moveAnimation {
+  0% {
+    left: 0;
+    top: 0;
+  }
+  100% {
+    left: 100%;
+    top: 100%;
+  }
+}
