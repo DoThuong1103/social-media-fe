@@ -1,6 +1,6 @@
 import './App.css';
 import Home from './Pages/Home/Home';
-import { BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Profile from './Pages/Profile/Profile';
 import Login from './Pages/Login/Login';
 import Register from './Pages/Register/Register';
@@ -47,7 +47,7 @@ function App() {
       {/* <Navbar /> */}
       <ScrollToTop />
       <Routes>
-        <Route path="">
+        <Route path="*">
           <Route path="/" element={userDetails?.verified === true ? <Home /> : <Navigate to={"/login"} replace={true} />}></Route>
           <Route path="/profile/:id" element={userDetails?.verified === true ? <Profile /> : <Navigate to={"/login"} replace={true} />}></Route>
           <Route path="/post/:id" element={userDetails?.verified === true ? <PostSearch /> : <Navigate to={"/login"} replace={true} />}></Route>
