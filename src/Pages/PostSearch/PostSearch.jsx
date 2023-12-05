@@ -17,10 +17,10 @@ const PostSearch = () => {
     setIsFetching(true);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/post/${id}`,
+        `${process.env.REACT_APP_BASE_URL}/post/${id}`,
         {
           headers: {
-            token: userDetails.user.accessToken,
+            token: userDetails.accessToken,
           },
         }
       );

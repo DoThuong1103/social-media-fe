@@ -4,15 +4,12 @@ import LeftBar from "../../Components/FriendPageLeftSideContainer/LeftBar";
 import MainPost from "../../Components/FriendMainPostContainer/MainPost";
 
 const FriendPage = () => {
-  const test = (data) => {
-    console.log(data);
-  };
   return (
     <div className="bg-slate-200 min-h-screen scroll-smooth">
-      {/* <Navbar /> */}
-      <div className="flex md:justify-between mx-auto pt-14 w-full gap-8">
+      <Navbar />
+      <div className="flex md:justify-between mx-auto pt-12 w-full">
         <div className="sticky top-20">
-          <LeftBar test={test} />
+          <LeftBar />
         </div>
         <MainPost />
       </div>

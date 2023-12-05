@@ -2,7 +2,7 @@ import { io } from 'socket.io-client';
 import { getOnline } from './userReducer';
 
 export const getUserOnline = (userId, dispatch) => {
-  const socket = io("http://localhost:5000");
+  const socket = io("https://social-media-be-hxiw.onrender.com");
 
   socket.emit("addUser", userId);
 

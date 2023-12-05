@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 
 import SearchIcon from "../../Images/search.png";
 import Notifications from "../../Images/bell.png";
@@ -9,31 +10,36 @@ import Icon from "../CommonComponents/Img/Icon";
 import ProfileImg from "../CommonComponents/Img/ProfileImg";
 import { logout } from "../../Redux/userReducer";
 import { IoMdCloseCircle } from "react-icons/io";
-import axios from "axios";
+import { AiOutlineLogout } from "react-icons/ai";
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const userDetails = useSelector((state) => state.user);
+  const accessToken = userDetails?.accessToken;
+  const searchData = userDetails?.allUser;
+  const { id } = useParams();
+  const countNotification = [];
+
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [searchData, setSearchData] = useState();
   const [notifications, setNotifications] = useState();
   const [isShowNotification, setIsShowNotification] = useState(false);
   const [isShowSearchInput, setIsShowSearchInput] = useState(false);
 
-  const dispatch = useDispatch();
-  const userDetails = useSelector((state) => state.user);
-  const accessToken = userDetails.user.accessToken;
-  const { id } = useParams();
-  const countNotification = [];
-
   useEffect(() => {
-    const sortedData = searchData?.sort((a, b) =>
-      a.username.localeCompare(b.username, undefined, {
+    if (!searchData) return;
+
+    const clonedData = searchData.map((item) => ({ ...item }));
+
+    const sortedData = clonedData.sort((a, b) =>
+      a?.username?.localeCompare(b.username, undefined, {
         sensitivity: "base",
       })
     );
-    const results = sortedData?.filter((user) =>
+
+    const results = sortedData.filter((user) =>
       user?.username
         ?.toLowerCase()
-        .includes(searchTerm?.toLowerCase())
+        ?.includes(searchTerm?.toLowerCase())
     );
     setSearchResults(results);
   }, [searchTerm, searchData]);
@@ -43,7 +49,7 @@ const Navbar = () => {
   const getNotifications = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/user/notification`,
+        `${process.env.REACT_APP_BASE_URL}/user/notification`,
         {
           headers: {
             token: accessToken,
@@ -59,25 +65,25 @@ const Navbar = () => {
     getNotifications();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
-
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:5000/api/user/allUser`,
-          {
-            headers: {
-              token: accessToken,
-            },
-          }
-        );
-        setSearchData(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getUser();
-  }, [accessToken]);
+  console.log(`${process.env.REACT_APP_BASE_URL}/user/notification`);
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     try {
+  //       const res = await axios.get(
+  //         `${process.env.REACT_APP_BASE_URL}/user/allUser`,
+  //         {
+  //           headers: {
+  //             token: accessToken,
+  //           },
+  //         }
+  //       );
+  //       setSearchData(res.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getUser();
+  // }, [accessToken]);
 
   notifications?.map(
     (item) => item.active === false && countNotification.push(item)
@@ -85,13 +91,13 @@ const Navbar = () => {
   const handleUpdateNotification = async (noteId, postId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/user/notification/${noteId}`,
+        `${process.env.REACT_APP_BASE_URL}/user/notification/${noteId}`,
         {
           active: true,
         },
         {
           headers: {
-            token: `${userDetails.user.accessToken}`,
+            token: `${userDetails.accessToken}`,
           },
         }
       );
@@ -106,11 +112,11 @@ const Navbar = () => {
   const handleCheckAll = async () => {
     try {
       await axios.put(
-        `http://localhost:5000/api/user/checkNotification`,
+        `${process.env.REACT_APP_BASE_URL}/user/checkNotification`,
         {},
         {
           headers: {
-            token: `${userDetails.user.accessToken}`,
+            token: `${userDetails.accessToken}`,
           },
         }
       );
@@ -121,9 +127,9 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 h-14 flex items-center  w-full m-auto justify-between p-2  md:px-4 lg:px-16 bg-white rounded-b-xl z-10">
+    <div className="fixed top-0 h-14 flex items-center  w-full m-auto justify-around md:justify-between p-2 md:px-4 lg:px-16 bg-white rounded-b-xl z-10">
       {isShowSearchInput && (
-        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex md:hidden items-center bg-slate-200 p-1 px-2 rounded-xl gap-1">
+        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex md:hidden items-center bg-slate-300 p-1 px-2 rounded-xl gap-1">
           <input
             className="bg-transparent w-[300px] lg:w-[400px] rounded-md p-[2px] outline-none"
             type="text"
@@ -131,12 +137,14 @@ const Navbar = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value.trim())}
           />
-          {searchTerm && (
-            <IoMdCloseCircle
-              className="text-lg"
-              onClick={() => setSearchTerm("")}
-            />
-          )}
+
+          <IoMdCloseCircle
+            className={`text-lg ${
+              searchTerm ? "opacity-100" : "opacity-0"
+            }`}
+            onClick={() => setSearchTerm("")}
+          />
+
           {searchTerm?.length > 0 && (
             <div className="absolute flex md:hidden flex-col gap-2 top-10 left-0 w-full h-[300px] rounded-md p-2 bg-white shadow-md overflow-hidden overflow-y-scroll">
               {searchResults?.map((item) => (
@@ -146,7 +154,7 @@ const Navbar = () => {
                 >
                   <div
                     className="flex gap-2 items-center w-full cursor-pointer"
-                    onClick={() => console.log("1", item)}
+                    // onClick={() => console.log("1", item)}
                   >
                     <ProfileImg src={item.avatar} />
                     <p className="">{item.username}</p>
@@ -184,17 +192,23 @@ const Navbar = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value.trim())}
           />
+          <IoMdCloseCircle
+            className={`text-lg hidden md:block ${
+              searchTerm ? "opacity-100" : "opacity-0"
+            }`}
+            onClick={() => setSearchTerm("")}
+          />
         </div>
-        {/* {searchTerm?.length > 0 && (
-          <div className="absolute flex flex-col gap-2 top-10 w-[200px] md:w-full h-[300px] rounded-md p-2 bg-white shadow-md overflow-hidden overflow-y-scroll">
+        {searchTerm?.length > 0 && (
+          <div className="absolute hidden md:flex flex-col gap-2 top-10 w-[200px] md:w-full h-[300px] rounded-md p-2 bg-white shadow-md overflow-hidden overflow-y-scroll">
             {searchResults?.map((item) => (
               <Link
-                to={`profile/${item._id}`}
+                to={`/profile/${item._id}`}
                 className="flex flex-col gap-1"
               >
                 <div
                   className="flex gap-2 items-center w-full cursor-pointer"
-                  onClick={() => console.log("1", item)}
+                  // onClick={() => console.log("1", item)}
                 >
                   <ProfileImg src={item.avatar} />
                   <p className="">{item.username}</p>
@@ -206,9 +220,9 @@ const Navbar = () => {
               <p className="text-center">No results search</p>
             )}
           </div>
-        )} */}
+        )}
       </div>
-      <div className="relative flex items-center gap-5 ">
+      <div className="relative flex items-center gap-2 md:gap-5 ">
         <div
           className={`relative cursor-pointer p-2 rounded-full transition-all bg-slate-200 hover:bg-slate-300 ${
             isShowNotification ? "bg-slate-300" : ""
@@ -270,21 +284,29 @@ const Navbar = () => {
         </div>
         <Link
           to={"/chat"}
+          title="Chat"
           className="p-2 rounded-full transition-all bg-slate-200 hover:bg-slate-300 cursor-pointer"
         >
           <Icon src={Message} alt="" pointer />
         </Link>
-        <Link to={`/profile/${userDetails?.user?.other?._id}`}>
+        <Link to={`/profile/${userDetails?.user?._id}`}>
           <div className="flex items-center gap-2">
             <ProfileImg
-              src={userDetails.user.other.avatar}
+              src={userDetails.user.avatar}
+              size="medium"
               alt="  "
             />
-            <p>{userDetails.user.other.username}</p>
+            <p className="hidden md:block">
+              {userDetails.user.username}
+            </p>
           </div>
         </Link>
-        <div className="cursor-pointer" onClick={handleLogout}>
-          Logout
+        <div
+          title="Logout"
+          className="p-2 rounded-full bg-slate-200 hover:bg-red-500 cursor-pointer transition-all group"
+          onClick={handleLogout}
+        >
+          <AiOutlineLogout className="w-4 h-4 md:w-5 md:h-5 group-hover:text-white transition-all" />
         </div>
       </div>
     </div>

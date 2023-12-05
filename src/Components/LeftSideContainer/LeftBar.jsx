@@ -9,21 +9,21 @@ import AddFriendContainer from "../CommonComponents/FollowingContainer";
 
 const LeftBar = () => {
   const userDetails = useSelector((state) => state.user);
-  const accessToken = userDetails.user.accessToken;
-  const [userFollow, setUserFollow] = useState([]);
+  const accessToken = userDetails.accessToken;
+  const [userSuggested, setUserSuggested] = useState();
   const [friendRequest, setFriendRequest] = useState(null);
 
   const getSuggest = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/user/suggestions`,
+        `${process.env.REACT_APP_BASE_URL}/user/suggestions`,
         {
           headers: {
             token: accessToken,
           },
         }
       );
-      setUserFollow(res.data);
+      setUserSuggested(res.data.splice(0, 5));
     } catch (error) {
       console.log(error);
     }
@@ -31,7 +31,7 @@ const LeftBar = () => {
   const getFriendRequest = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/user/friendRequest`,
+        `${process.env.REACT_APP_BASE_URL}/user/friendRequest`,
         {
           headers: {
             token: accessToken,
@@ -45,15 +45,17 @@ const LeftBar = () => {
   };
 
   useEffect(() => {
-    getSuggest();
-    getFriendRequest();
+    if (accessToken) {
+      getSuggest();
+      getFriendRequest();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [accessToken]);
 
   const handleAcceptReq = async (id) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/user/acceptFriend/${id}`,
+        `${process.env.REACT_APP_BASE_URL}/user/acceptFriend/${id}`,
         {},
         {
           headers: {
@@ -73,7 +75,7 @@ const LeftBar = () => {
   const handleDeleteReq = async (id) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/user/deleteRequestFriend/${id}`,
+        `${process.env.REACT_APP_BASE_URL}/user/deleteRequestFriend/${id}`,
         {},
         {
           headers: {
@@ -93,7 +95,7 @@ const LeftBar = () => {
   const handleAddFriend = async (id) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/user/addFriend/${id}`,
+        `${process.env.REACT_APP_BASE_URL}/user/addFriend/${id}`,
         {},
         {
           headers: {
@@ -109,7 +111,6 @@ const LeftBar = () => {
       );
     }
   };
-
   return (
     <div className="hidden lg:flex sticky top-[80px] flex-col h-screen">
       <div className="flex flex-col gap-4 w-[280px] h-2/5 bg-white rounded-2xl py-2 px-4 mx-auto">
@@ -120,7 +121,7 @@ const LeftBar = () => {
           </Link>
         </div>
         <div className=" flex flex-col gap-2 h-full overflow-hidden overflow-y-scroll pr-4">
-          {userFollow?.splice(0, 5)?.map((user) => (
+          {userSuggested?.map((user) => (
             <div key={user._id}>
               <AddFriendContainer
                 user={user}
@@ -133,18 +134,23 @@ const LeftBar = () => {
       <div className="flex flex-col gap-4 w-[280px] h-2/5 bg-white mt-6 rounded-2xl py-2 px-4 mx-auto">
         <div className="flex justify-between items-end">
           <p className="text-xl font-bold ">Friend Requests</p>
-          <Link to={"/friends/requests"}>
+          <Link to={"/friends/yourRequests"}>
             <p className="text-[#aaa] cursor-pointer">All</p>
           </Link>
         </div>
-        <div className=" flex flex-col gap-2 h-full overflow-hidden overflow-y-scroll pr-4">
-          {friendRequest?.splice(0, 5)?.map((user) => (
+        {friendRequest?.length === 0 && (
+          <span>No Friend Requests</span>
+        )}
+        <div className=" flex flex-col gap-2 h-full overflow-hidden overflow-y-scroll ">
+          {friendRequest?.map((user) => (
             <div key={user._id}>
               <div className="flex gap-2 items-end">
-                <Link to={`/profile/${user._id}`}>
-                  <ProfileImg src={user.avatar} size="medium" />
-                </Link>
-                <div className="flex flex-col gap-[2px] w-full">
+                <div className="flex items-center justify-center">
+                  <Link to={`/profile/${user._id}`}>
+                    <ProfileImg src={user.avatar} size="medium" />
+                  </Link>
+                </div>
+                <div className="flex-1 flex flex-col gap-[2px] w-full">
                   {" "}
                   <Link to={`/profile/${user._id}`}>
                     <span>{user.username}</span>

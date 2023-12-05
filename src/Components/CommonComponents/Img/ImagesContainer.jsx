@@ -13,6 +13,7 @@ const ImagesContainer = ({
   post,
   handleComment,
   comments,
+  setShow,
 }) => {
   const [openImg, setOpenImg] = useState(false);
   const handleOpenImage = () => {
@@ -21,7 +22,9 @@ const ImagesContainer = ({
   return (
     <>
       <div
-        className={`cursor-pointer w-[96%]  mx-auto ${
+        className={`${
+          setShow ? "cursor-pointer" : ""
+        }  w-[96%]  mx-auto ${
           images.length < 3 ? "" : "grid grid-cols-2 gap-1"
         } `}
         onClick={handleOpenImage}
@@ -55,7 +58,7 @@ const ImagesContainer = ({
         >
           {images.map((image, index) => (
             <div
-              className={`  ${
+              className={`relative  ${
                 index % 2 === 0 && index !== 4 ? "hidden" : ""
               } ${images.length === 3 ? "h-full" : ""} ${
                 index > 4 ? " hidden" : "1"
@@ -82,7 +85,7 @@ const ImagesContainer = ({
           ))}
         </div>
       </div>
-      {openImg && (
+      {setShow && openImg && (
         <div className="flex fixed w-screen h-screen max-h-screen bg-slate-400 top-0 left-0 z-[9999]">
           <Swiper
             navigation={true}

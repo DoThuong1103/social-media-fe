@@ -10,12 +10,12 @@ const Chat = () => {
   const [users, setUsers] = useState(null);
   const userDetails = useSelector((state) => state.user);
   const user = userDetails.user;
-  const id = user.other._id;
-  const accessToken = user.accessToken;
+  const id = user._id;
+  const accessToken = userDetails.accessToken;
   const getUsers = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/user/allFriend`,
+        `${process.env.REACT_APP_BASE_URL}/user/allFriend`,
         {
           headers: {
             token: `${accessToken}`,

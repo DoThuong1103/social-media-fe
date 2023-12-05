@@ -1,31 +1,33 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { tailspin } from "ldrs";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import ImagesContainer from "../CommonComponents/Img/ImagesContainer";
+import Time from "../CommonComponents/Time";
+import Comments from "../CommonComponents/Comments";
 import ProfileImg from "../CommonComponents/Img/ProfileImg";
 import Icon from "../CommonComponents/Img/Icon";
+
 import LikeIcon from "../../Images/like.png";
 import LikeIconActive from "../../Images/setLike.png";
 import UserImg from "../../Images/icons8-user-100.png";
 import CommentIcon from "../../Images/speech-bubble.png";
+import { TbMessageCircle2Filled } from "react-icons/tb";
+import { TbMessageCircle2 } from "react-icons/tb";
 import ShareIcon from "../../Images/share.png";
 import MoreOption from "../../Images/more.png";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import ImagesContainer from "../CommonComponents/Img/ImagesContainer";
-import Time from "../CommonComponents/Time";
-import { tailspin } from "ldrs";
-import Comments from "../CommonComponents/Comments";
-import { Link } from "react-router-dom";
-
+import { FaHeart } from "react-icons/fa6";
 tailspin.register();
 
 // Default values shown
 
-const PostContainer = ({ post, getPost }) => {
+const PostContainer = ({ post }) => {
   const userDetails = useSelector((state) => state.user);
-  const userId = userDetails.user.other._id;
-  const accessToken = userDetails.user.accessToken;
-  const [like, setLike] = useState(
-    post?.like?.includes(userId) ? LikeIconActive : LikeIcon
-  );
+  const userId = userDetails.user._id;
+  const accessToken = userDetails.accessToken;
+  const [like, setLike] = useState(post?.like?.includes(userId));
   const [count, setCount] = useState(post?.like?.length);
   const [comments, setComments] = useState(post.comments);
   const [countComment, setCountComment] = useState(post.countComment);
@@ -37,22 +39,10 @@ const PostContainer = ({ post, getPost }) => {
     setIsExpanded(!isExpanded);
   };
   const handleLike = async () => {
-    if (like === LikeIcon) {
-      setIsLoadLike(true);
-      await fetch(`http://localhost:5000/api/post/${post._id}/like`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application.Json",
-          token: accessToken,
-        },
-      });
-      setIsLoadLike(false);
-      setLike(LikeIconActive);
-      setCount(count + 1);
-    } else {
+    if (!like) {
       setIsLoadLike(true);
       await fetch(
-        `http://localhost:5000/api/post/${post._id}/dislike`,
+        `${process.env.REACT_APP_BASE_URL}/post/${post._id}/like`,
         {
           method: "PUT",
           headers: {
@@ -62,7 +52,22 @@ const PostContainer = ({ post, getPost }) => {
         }
       );
       setIsLoadLike(false);
-      setLike(LikeIcon);
+      setLike(true);
+      setCount(count + 1);
+    } else {
+      setIsLoadLike(true);
+      await fetch(
+        `${process.env.REACT_APP_BASE_URL}/post/${post._id}/dislike`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application.Json",
+            token: accessToken,
+          },
+        }
+      );
+      setIsLoadLike(false);
+      setLike(false);
       setCount(count - 1);
     }
   };
@@ -74,7 +79,7 @@ const PostContainer = ({ post, getPost }) => {
     cmtMain,
   }) => {
     const res = await axios.put(
-      `http://localhost:5000/api/post/comment`,
+      `${process.env.REACT_APP_BASE_URL}/post/comment`,
       {
         postId: postId,
         userId: userId,
@@ -99,7 +104,7 @@ const PostContainer = ({ post, getPost }) => {
 
   return (
     <div>
-      <div className="w-full mx-auto bg-white my-5 rounded-lg p-3 pb-0">
+      <div className="w-full mx-auto bg-white rounded-lg p-3 pb-0">
         <div className="flex flex-col gap-4">
           <Link
             to={`/profile/${post.user._id}`}
@@ -149,6 +154,7 @@ const PostContainer = ({ post, getPost }) => {
                 images={post?.images}
                 handleComment={handleComment}
                 comments={comments}
+                setShow={true}
               />
             )}
             {post?.video && (
@@ -157,9 +163,23 @@ const PostContainer = ({ post, getPost }) => {
               </video>
             )}
           </div>
-          <div className="flex justify-around items-center border-t-[1px] py-1">
+          <div className="flex md:hidden justify-between items-center">
             <div
-              className="flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-slate-200 py-1 rounded-md transition-all"
+              className={`${
+                count === 0 ? "opacity-0" : ""
+              } flex items-center gap-2`}
+            >
+              <FaHeart className="text-red-500" />
+              <span>{count}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <TbMessageCircle2Filled className="w-4 h-4 text-slate-500 " />
+              <span> {countComment}</span>
+            </div>
+          </div>
+          <div className="flex justify-between md:justify-around items-center border-t-[1px] py-1">
+            <div
+              className="md:flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-slate-200 p-1 md:p-0 py-1 rounded-md transition-all"
               onClick={handleLike}
             >
               {isLoadLike ? (
@@ -170,21 +190,33 @@ const PostContainer = ({ post, getPost }) => {
                   color="black"
                 ></l-tailspin>
               ) : (
-                <Icon src={like} pointer alt="" />
+                <FaHeart
+                  className={`w-4 h-4 md:w-5 md:h-5 ${
+                    like ? "text-red-500" : "text-slate-500"
+                  }`}
+                />
               )}
-              <p>{count} Likes</p>
+              <div className="flex items-center gap-1">
+                <span className="hidden md:block">{count}</span>{" "}
+                <span>Likes</span>
+              </div>
             </div>
-            <div className="h-6 w-[1px] bg-[#dfdede]"></div>
+            <div className="h-6 w-[1px] bg-[#dfdede] hidden md:block"></div>
             <div
-              className="flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-slate-200 py-1 rounded-sm transition-all"
+              className="md:flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-slate-200 p-1 md:p-0 py-1 rounded-sm transition-all"
               onClick={handleShowComment}
             >
-              <Icon src={CommentIcon} pointer alt="" />
-              <p>{countComment} Comments</p>
+              <TbMessageCircle2 className="w-4 h-4 md:w-5 md:h-5" />
+              <div className="flex items-center gap-1">
+                <span className="hidden md:block">
+                  {countComment}
+                </span>{" "}
+                <span>Comments</span>
+              </div>
             </div>
-            <div className="h-6 w-[1px] bg-[#dfdede]"></div>
+            <div className="h-6 w-[1px] bg-[#dfdede] hidden md:block"></div>
 
-            <div className="flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-slate-200 py-1 rounded-sm transition-all">
+            <div className="md:flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-slate-200 py-1 rounded-sm transition-all">
               <Icon src={ShareIcon} pointer alt="" />
               <p> Share</p>
             </div>

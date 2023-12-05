@@ -10,9 +10,10 @@ const Contact = ({ setCurrentChatUser, users }) => {
   // const [users, setUsers] = useState(null);
   const [dataUsers, setDataUsers] = useState(null);
   const userDetails = useSelector((state) => state.user);
+  // const [lastMess, setLastMess] = useState(userDetails)
   const user = userDetails.user;
-  const id = user.other._id;
-  const accessToken = user.accessToken;
+  const id = user._id;
+  const accessToken = userDetails.accessToken;
   // useEffect(() => {
   //   const getUsers = async () => {
   //     try {

@@ -7,13 +7,13 @@ const RightBar = () => {
   const [dataUsers, setDataUsers] = useState(null);
   const [users, setUsers] = useState(null);
   const userDetails = useSelector((state) => state.user);
-  const accessToken = userDetails.user.accessToken;
+  const accessToken = userDetails.accessToken;
 
   useEffect(() => {
     const getUsers = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/user/allFriend`,
+          `${process.env.REACT_APP_BASE_URL}/user/allFriend/${userDetails.user._id}`,
           {
             headers: {
               token: `${accessToken}`,
@@ -40,9 +40,10 @@ const RightBar = () => {
     );
     setDataUsers(sortedUsers);
   }, [users, userDetails.online]);
+  console.log(users);
   return (
     <div className="hidden lg:block sticky top-[80px] w-full">
-      <div className="flex flex-col gap-4 w-full h-[300px] mt-6 rounded-2xl py-2 px-4 mx-auto">
+      <div className="flex flex-col gap-4 w-full h-[300px] rounded-2xl px-4 mx-auto">
         <p className="text-xl font-bold ">Contact</p>
         <div className="flex flex-col gap-2 w-full">
           {dataUsers?.map(

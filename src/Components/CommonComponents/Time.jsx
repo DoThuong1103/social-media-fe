@@ -8,7 +8,7 @@ const Time = ({ times }) => {
   const now = new Date().getTime();
   const time = new Date(times).getTime();
   const timePost =
-    (now - time) / minute === 0
+    (now - time) / minute < 1
       ? "Just now"
       : (now - time) / minute < 59
       ? Math.round((now - time) / minute) + "m"

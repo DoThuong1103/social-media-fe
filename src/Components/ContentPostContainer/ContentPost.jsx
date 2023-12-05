@@ -99,7 +99,7 @@ const ContentPost = ({ getPost }) => {
           // to send data to your server or perform any other actions
           axios
             .post(
-              `http://localhost:5000/api/post/user/post`,
+              `${process.env.REACT_APP_BASE_URL}/post/user/post`,
               {
                 title: title,
                 images: downloadURLs,
@@ -107,7 +107,7 @@ const ContentPost = ({ getPost }) => {
               {
                 headers: {
                   "Content-Type": "application/json",
-                  token: userDetails.user.accessToken,
+                  token: userDetails.accessToken,
                 },
               }
             )
@@ -179,11 +179,11 @@ const ContentPost = ({ getPost }) => {
         () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          getDownloadURL(uploadTask.snapshot.ref).then(
-            (downloadURL) => {
+          getDownloadURL(uploadTask.snapshot.ref)
+            .then((downloadURL) => {
               axios
                 .post(
-                  `http://localhost:5000/api/post/user/post`,
+                  `${process.env.REACT_APP_BASE_URL}/post/user/post`,
                   {
                     title: title,
                     video: downloadURL,
@@ -191,7 +191,7 @@ const ContentPost = ({ getPost }) => {
                   {
                     headers: {
                       "Content-Type": "application/json",
-                      token: userDetails.user.accessToken,
+                      token: userDetails.accessToken,
                     },
                   }
                 )
@@ -201,40 +201,61 @@ const ContentPost = ({ getPost }) => {
                   setVideo(null);
                   setSrcVideo([]);
                   getPost();
+                  notify("success", "Your post has been published!");
+                })
+                .catch((error) => {
+                  notify(
+                    "error",
+                    "An error occurred. Please try again later!"
+                  );
+                  setIsUpload(false);
+                  setTitle("");
+                  setVideo(null);
+                  setSrcVideo([]);
+                  // Handle error from the server
                 });
-            }
-          );
+            })
+            .catch((error) => {
+              notify(
+                "error",
+                "An error occurred. Please try again later!"
+              );
+
+              // Handle any errors during the upload process
+            });
         }
       );
     }
     if (images.length === 0 && !video) {
       axios
         .post(
-          `http://localhost:5000/api/post/user/post`,
+          `${process.env.REACT_APP_BASE_URL}/post/user/post`,
           {
             title: title,
           },
           {
             headers: {
               "Content-Type": "application/json",
-              token: userDetails.user.accessToken,
+              token: userDetails.accessToken,
             },
           }
         )
         .then((data) => {
           setIsUpload(false);
-          getPost();
+          setTitle("");
+          getPost(1);
+          notify("success", "Your post has been published!");
+        })
+        .catch((error) => {
+          console.log(error);
         });
     }
   };
   return (
     <div>
-      <div className="relative w-full min-h-[10vh] bg-white mx-auto mt-6 rounded-lg p-3">
+      <div className="relative w-full min-h-[10vh] bg-white mx-auto rounded-lg p-3">
         <div className="flex items-center gap-2 ">
-          <ProfileImg
-            src={userDetails.user.other.avatar}
-            size="medium"
-          />
+          <ProfileImg src={userDetails.user.avatar} size="medium" />
           <input
             type="text"
             className=" outline-none w-full bg-slate-200 rounded-3xl p-2"
@@ -254,7 +275,9 @@ const ContentPost = ({ getPost }) => {
           </div>
         ) : null}
         <div className="pt-4">
-          {srcImages && <ImagesContainer images={srcImages} />}
+          {srcImages && (
+            <ImagesContainer images={srcImages} setShow={false} />
+          )}
           {srcVideo && (
             <video controls className="rounded-lg">
               <source src={srcVideo} type="video/mp4" />
@@ -263,15 +286,16 @@ const ContentPost = ({ getPost }) => {
         </div>
         <div className=" flex gap-10 mt-6 items-center border-t-[1px] pt-1">
           <label
-            htmlFor="image"
+            htmlFor="imagePost"
             className="flex gap-2 items-center cursor-pointer hover:bg-slate-200 py-2 px-3 rounded-lg transition-all"
+            onClick={() => console.log(1)}
           >
             <Icon src={ImageIcon} pointer size="large" alt="" />
-            <span>Image</span>
+            <span className="hidden md:block">Image</span>
             <input
               type="file"
               name="image"
-              id="image"
+              id="imagePost"
               style={{ display: "none" }}
               accept="image/*"
               multiple
@@ -283,7 +307,7 @@ const ContentPost = ({ getPost }) => {
             className="flex gap-2 items-center cursor-pointer hover:bg-slate-200 py-2 px-3 rounded-lg transition-all"
           >
             <Icon src={VideoIcon} pointer size="large" alt="" />
-            <span>Video</span>
+            <span className="hidden md:block">Video</span>
             <input
               type="file"
               name="image"

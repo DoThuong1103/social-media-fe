@@ -13,7 +13,7 @@ const ProfileRightBar = () => {
     const getFollowers = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/user/followers",
+          "${process.env.REACT_APP_BASE_URL}/user/followers",
           {
             headers: {
               token: `${accessToken}`,
@@ -32,7 +32,7 @@ const ProfileRightBar = () => {
     const getUser = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/user/allUser`,
+          `${process.env.REACT_APP_BASE_URL}/user/allUser`,
           {
             headers: {
               token: accessToken,
@@ -51,7 +51,7 @@ const ProfileRightBar = () => {
     const follow = async () => {
       try {
         const res = await axios.put(
-          `http://localhost:5000/api/user/following/${id}`,
+          `${process.env.REACT_APP_BASE_URL}/user/following/${id}`,
           {},
           {
             headers: {

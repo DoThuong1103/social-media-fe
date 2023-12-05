@@ -28,7 +28,7 @@ const ProfilePostContainer = ({ post }) => {
     const getUser = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/user/post/user/details/${post.user}`
+          `${process.env.REACT_APP_BASE_URL}/user/post/user/details/${post.user}`
         );
         setUser(res.data);
       } catch (error) {
@@ -42,7 +42,7 @@ const ProfilePostContainer = ({ post }) => {
   };
   const handleLike = async () => {
     if (like === LikeIcon) {
-      await fetch(`http://localhost:5000/api/post/${post._id}/like`, {
+      await fetch(`${process.env.REACT_APP_BASE_URL}/post/${post._id}/like`, {
         method: "PUT",
         headers: {
           "Content-Type": "application.Json",
@@ -53,7 +53,7 @@ const ProfilePostContainer = ({ post }) => {
       setCount(count + 1);
     } else {
       await fetch(
-        `http://localhost:5000/api/post/${post._id}/dislike`,
+        `${process.env.REACT_APP_BASE_URL}/post/${post._id}/dislike`,
         {
           method: "PUT",
           headers: {
@@ -68,7 +68,7 @@ const ProfilePostContainer = ({ post }) => {
   };
   const handleComment = async () => {
     const res = await axios.put(
-      `http://localhost:5000/api/post/comment`,
+      `${process.env.REACT_APP_BASE_URL}/post/comment`,
       {
         postid: post._id,
         content: commentWriting,

@@ -6,7 +6,7 @@ import CommentContainer from "./CommentContainer";
 
 const Comments = ({ handleComment, post, comments, maxHight }) => {
   const userDetails = useSelector((state) => state.user);
-  const userId = userDetails.user.other._id;
+  const userId = userDetails.user._id;
   const [isShowMore, setIsShowMore] = useState(false);
   const [commentWriting, setCommentWriting] = useState("");
   // const [comments, setComments] = useState(post.comments);
@@ -26,11 +26,7 @@ const Comments = ({ handleComment, post, comments, maxHight }) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-3 ">
-        <ProfileImg
-          src={userDetails.user.other.avatar}
-          size="medium"
-          alt=""
-        />
+        <ProfileImg src={userDetails.user.avatar} alt="" />
         <div className="flex items-center px-2 rounded-lg flex-1 bg-slate-200">
           <input
             className="w-full outline-none bg-transparent"
@@ -72,7 +68,7 @@ const Comments = ({ handleComment, post, comments, maxHight }) => {
         </div>
       </div>
       <div
-        className={`${
+        className={`pb-2 ${
           maxHight
             ? "max-h-[70vh] overflow-auto overflow-y-scroll"
             : ""

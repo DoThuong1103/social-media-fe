@@ -6,7 +6,7 @@ const Icon = ({ src, pointer, size, onClick }) => {
       ? "w-7 h-7"
       : size === "medium"
       ? "w-6 h-6"
-      : "w-5 h-5";
+      : "w-4 h-4 md:w-5 md:h-5";
   return (
     <img
       className={` ${sizeIcon} ${

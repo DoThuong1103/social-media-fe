@@ -1,6 +1,6 @@
 
 import axios from "axios"
-import { loginFailure, loginStart, loginSuccess } from "./userReducer"
+import { getProfile, loginFailure, loginStart, loginSuccess, allUser } from "./userReducer"
 import { Endpoints } from "../constants/endpoint"
 
 export const login = async (dispatch, user) => {
@@ -10,6 +10,15 @@ export const login = async (dispatch, user) => {
     dispatch(loginSuccess(res.data))
   } catch (error) {
     dispatch(loginFailure())
+  }
+}
+
+export const getUserProfile = async (dispatch, id) => {
+  try {
+    const res = await axios.get(`${process.env.REACT_APP_BASE_URL}/user/profile/${id}`, {},
+    );
+    dispatch(getProfile(res.data));
+  } catch (error) {
   }
 }
 
@@ -34,12 +43,16 @@ export const signup = async (dispatch, user) => {
   }
 }
 
-export const getAllUser = async (dispatch, user) => {
+export const getAllUser = async (dispatch, accessToken) => {
   try {
-    const res = await axios.get(`${process.env.REACT_APP_BASE_URL}/user/allUser`, {},
-      { header: { token: user.user.accessToken } });
-    console.log(res);
-    dispatch(getAllUser(res.data));
+    if (!accessToken) return
+    const res = await axios.get(`${process.env.REACT_APP_BASE_URL}/user/allUser`,
+      {
+        headers: {
+          token: accessToken,
+        },
+      });
+    dispatch(allUser(res.data));
   } catch (error) {
   }
 }

@@ -7,7 +7,7 @@ import "./PostLoading.css";
 
 const PostLoading = () => {
   return (
-    <div className="flex flex-1 flex-col w-full gap-5 my-5">
+    <div className="flex flex-1 flex-col w-full gap-5 my-2">
       <div className="flex flex-col justify-between w-full h-[500px] bg-white rounded-lg p-3 gap-4">
         <div className="flex gap-2 items-center">
           <div className="relative h-10 w-10 bg-[#ededed] rounded-full overflow-hidden ">

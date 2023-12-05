@@ -73,6 +73,7 @@ const ProfileLeftBar = () => {
 
   // const [followings, setFollowings] = useState([]);
   const [profileUser, setProfileUser] = useState("");
+  const [friends, setFriends] = useState(null);
   const [isOpenEditBio, setIsOpenEditBio] = useState(false);
   const [isOpenShowRelationship, setIsOpenShowRelationship] =
     useState(false);
@@ -87,9 +88,9 @@ const ProfileLeftBar = () => {
   const [posts, setPosts] = useState([]);
   const [openImg, setOpenImg] = useState(false);
 
-  const accessToken = userDetails.user.accessToken;
+  const accessToken = userDetails.accessToken;
 
-  const isUser = userDetails.user.other._id === id;
+  const isUser = userDetails.user._id === id;
   // useEffect(() => {
   //   const getFollowings = async () => {
   //     try {
@@ -106,7 +107,7 @@ const ProfileLeftBar = () => {
   const getProfileUser = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/user/profile/${id}`
+        `${process.env.REACT_APP_BASE_URL}/user/profile/${id}`
       );
       setProfileUser(res.data);
       setRelationship(res.data.relationship);
@@ -115,15 +116,33 @@ const ProfileLeftBar = () => {
     }
   };
 
+  const getAllFriend = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/user/allFriend/${id}`,
+        {
+          headers: {
+            token: `${accessToken}`,
+          },
+        }
+      );
+      setFriends(res.data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+
   useEffect(() => {
     getProfileUser();
+    getAllFriend();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+  console.log(friends);
   const handleUpdateBio = () => {
     const updateBio = async () => {
       try {
         await axios.put(
-          `http://localhost:5000/api/user/updateProfile`,
+          `${process.env.REACT_APP_BASE_URL}/user/updateProfile`,
           {
             profile: bio ? bio : profileUser?.profile,
             birthDay: day ? day : profileUser?.birthDay,
@@ -133,17 +152,22 @@ const ProfileLeftBar = () => {
           },
           {
             headers: {
-              token: `${userDetails.user.accessToken}`,
+              token: `${userDetails.accessToken}`,
             },
           }
         );
         getProfileUser();
+        setIsOpenEditBio(false);
+        setIsOpenShowRelationship(false);
+        setIsOpenSetBirthDay(false);
+        setBio("");
+        setDay("");
+        setRelationship("");
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
     };
     updateBio();
-    setIsOpenEditBio(false);
   };
   const openEditBio = () => {
     setIsOpenEditBio(true);
@@ -156,7 +180,7 @@ const ProfileLeftBar = () => {
   const getPost = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/post/userPost/${id}`,
+        `${process.env.REACT_APP_BASE_URL}/post/images/${id}`,
         {
           headers: {
             token: `${accessToken}`,
@@ -174,7 +198,7 @@ const ProfileLeftBar = () => {
   }, [id, accessToken]);
   return (
     <div className="flex flex-col gap-4 w-full md:w-[280px] xl:w-[360px] pb-10">
-      <div className="flex flex-col gap-2 h-[320px] lg:h-[400px] bg-white rounded-lg mt-6 p-4 overflow-hidden text-black">
+      <div className="flex flex-col gap-2 h-[320px] lg:h-[400px] bg-white rounded-lg p-4 overflow-hidden text-black">
         <p className="text-lg md:text-xl lg:text-3xl font-semibold">
           Intro
         </p>
@@ -227,23 +251,23 @@ const ProfileLeftBar = () => {
             ))}
         </div>
         {/* Followers */}
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           <p className="text-md ">
             Has{" "}
             <span className="font-semibold">
               {profileUser?.Followers?.length || 0} Followers
             </span>
           </p>
-        </div>
+        </div> */}
         {/* Followings */}
-        <div className="flex items-center gap-1">
+        {/* <div className="flex items-center gap-1">
           <p className="text-md font-semibold">Followings: </p>{" "}
           <p>
             <span className="">
               {profileUser?.Following?.length || 0}
             </span>
           </p>
-        </div>
+        </div> */}
         {/* Relationship */}
         <div className="flex flex-col gap-2 ">
           <div className="flex flex-col mt-2">
@@ -385,7 +409,7 @@ const ProfileLeftBar = () => {
             ))}
         </div>
       </div>
-      <div className="flex gap-4 flex-col h-[360px] md:h-[480px] lg:h-[600px] bg-white rounded-lg py-4 overflow-hidden">
+      {/* <div className="flex gap-4 flex-col h-[360px] md:h-[480px] lg:h-[600px] bg-white rounded-lg py-4 overflow-hidden">
         <div className="flex justify-around items-center">
           <p
             className={`text-lg font-bold text-center cursor-pointer hover:text-[#0861F2] transition-all ${
@@ -404,7 +428,6 @@ const ProfileLeftBar = () => {
             Followings
           </p>
         </div>
-        {/* {!tabActive && ( */}
         <div className="flex w-[200%] md:w-[560px] xl:w-[720px]">
           <div
             className={`w-full md:w-[280px] xl:w-[360px] grid grid-cols-3 gap-2 px-2 overflow-hidden overflow-y-scroll duration-1000 transition-all ${
@@ -426,7 +449,6 @@ const ProfileLeftBar = () => {
               </Link>
             ))}
           </div>
-          {/* )} */}
           <div
             className={`w-full md:w-[280px] xl:w-[360px] grid grid-cols-3 gap-2 px-2 overflow-hidden overflow-y-scroll  duration-1000 transition-all ${
               tabActive
@@ -448,6 +470,46 @@ const ProfileLeftBar = () => {
             ))}
           </div>
         </div>
+      </div> */}
+
+      {/* Friends */}
+      <div className="flex gap-4 flex-col h-[360px] md:h-[480px] lg:h-[500px] bg-white rounded-lg py-4 overflow-hidden">
+        <div className="flex justify-around items-center">
+          <p
+            className={`text-lg font-bold text-center cursor-pointer hover:text-[#0861F2] transition-all ${
+              tabActive ? "text-[#0861F2]" : ""
+            }`}
+            onClick={() => setTabActive(true)}
+          >
+            Friends
+          </p>
+        </div>
+        {/* {!tabActive && ( */}
+        {/* )} */}
+        <div
+          className={`w-full md:w-[280px] xl:w-[360px] grid grid-cols-3 gap-2 px-2 overflow-hidden overflow-y-scroll  duration-1000 transition-all cursor-pointer`}
+        >
+          {friends?.map((friend, index) => (
+            <Link to={`/profile/${friend._id}`}>
+              <img
+                key={index}
+                loading="lazy"
+                src={friend?.avatar}
+                className="w-full h-[100px] md:h-[90px] lg:h-[120px] object-cover"
+                alt=""
+              />
+              <div className="flex flex-col">
+                <span>{friend?.username}</span>
+                <span>{friend?.id}</span>
+                <span className="text-[#aaa] text-sm">
+                  {friend?.mutualFriends?.length > 0
+                    ? `(${friend?.mutualFriends?.length} mutual)`
+                    : ""}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* User image */}
@@ -465,15 +527,16 @@ const ProfileLeftBar = () => {
         {/* {!tabActive && ( */}
         {/* )} */}
         <div
-          className={`w-full md:w-[280px] xl:w-[360px] grid grid-cols-3 gap-2 px-2 overflow-hidden overflow-y-scroll  duration-1000 transition-all`}
+          className={`w-full md:w-[280px] xl:w-[360px] grid grid-cols-3 gap-2 px-2 overflow-hidden overflow-y-scroll  duration-1000 transition-all cursor-pointer`}
         >
-          {posts.map((post) =>
-            post.images.map((item, index) =>
+          {posts?.map((post) =>
+            post.map((item, index) =>
               item !== "" ? (
                 <img
                   key={index}
+                  loading="lazy"
                   src={item}
-                  className="w-full h-full object-cover"
+                  className="w-full h-[100px] md:h-[90px] lg:h-[120px] object-cover"
                   alt=""
                   onClick={() => setOpenImg(!openImg)}
                 />
@@ -490,8 +553,8 @@ const ProfileLeftBar = () => {
               modules={[Navigation]}
               className="flex w-full mx-auto max-h-screen"
             >
-              {posts.map((post) =>
-                post.images.map((item, index) => (
+              {posts?.map((post) =>
+                post?.map((item, index) => (
                   <SwiperSlide className="my-auto w-full h-full">
                     <div className="flex items-center justify-center w-full h-full">
                       <img

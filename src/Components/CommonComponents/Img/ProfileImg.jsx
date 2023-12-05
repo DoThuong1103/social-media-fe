@@ -12,7 +12,8 @@ const ProfileImg = ({ src, size }) => {
       {src ? (
         <img
           src={src}
-          className={`${sizeImg} rounded-full border-2 border-white`}
+          loading="lazy"
+          className={`${sizeImg} rounded-full border-2 border-white object-cover`}
           alt=""
         />
       ) : (
