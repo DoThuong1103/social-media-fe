@@ -68,7 +68,9 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
   }, [messages]);
   useEffect(() => {
     if (currentChatUser) {
-      socket.current = io("http://localhost:5000");
+      socket.current = io(
+        "https://social-media-be-hxiw.onrender.com"
+      );
       socket.current.emit("addUser", id);
     }
   }, [id, currentChatUser]);
