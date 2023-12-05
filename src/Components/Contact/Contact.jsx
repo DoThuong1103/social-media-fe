@@ -92,8 +92,12 @@ const Contact = ({ setCurrentChatUser, users }) => {
                   {user?.messages?.sender === id ? "You: " : ""}
                   {user?.messages?.message}
                 </p>
-                <p className="pb-[2px]">.</p>
-                <Time times={user?.messages?.createdAt} />
+                {user?.messages?.createdAt && (
+                  <>
+                    <p className="pb-[2px]">.</p>
+                    <Time times={user?.messages?.createdAt} />
+                  </>
+                )}
               </div>
             </div>
           </div>

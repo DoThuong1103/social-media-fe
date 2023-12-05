@@ -15,7 +15,7 @@ const Chat = () => {
   const getUsers = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/allFriend`,
+        `${process.env.REACT_APP_BASE_URL}/user/allFriend/${id}`,
         {
           headers: {
             token: `${accessToken}`,
@@ -30,6 +30,7 @@ const Chat = () => {
   useEffect(() => {
     getUsers();
   }, []);
+  console.log(users);
   return (
     <div className="flex h-screen">
       <Navbar />
