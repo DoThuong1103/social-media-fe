@@ -47,7 +47,7 @@ function App() {
       {/* <Navbar /> */}
       <ScrollToTop />
       <Routes>
-        <Route path="*">
+        <Route path="">
           <Route path="/" element={userDetails?.verified === true ? <Home /> : <Navigate to={"/login"} replace={true} />}></Route>
           <Route path="/profile/:id" element={userDetails?.verified === true ? <Profile /> : <Navigate to={"/login"} replace={true} />}></Route>
           <Route path="/post/:id" element={userDetails?.verified === true ? <PostSearch /> : <Navigate to={"/login"} replace={true} />}></Route>
