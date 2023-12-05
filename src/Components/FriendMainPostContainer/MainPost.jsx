@@ -1,12 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useParams,
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import UserImg from "../../Images/icons8-user-100.png";
 
@@ -15,6 +10,7 @@ const MainPost = () => {
   const [friends, setFriends] = useState(null);
 
   let params = useParams();
+  // eslint-disable-next-line no-unused-vars
   const { org, "*": splat } = params;
   const userDetails = useSelector((state) => state.user);
   const accessToken = userDetails.accessToken;

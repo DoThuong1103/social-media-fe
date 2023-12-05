@@ -1,18 +1,11 @@
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
+
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import app from "../../firebase";
 import { signup } from "../../Redux/apiCall";
 
 const Register = () => {
   const dispatch = useDispatch();
-  const { isFetching, error } = useSelector((state) => state.user);
   const user = useSelector((state) => state.user);
   const [email, setEmail] = useState("");
   const [phonenumber, setphonenumber] = useState("");

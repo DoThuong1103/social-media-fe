@@ -1,6 +1,6 @@
 import './App.css';
 import Home from './Pages/Home/Home';
-import { BrowserRouter, Navigate, Route, Routes, ScrollRestoration, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Profile from './Pages/Profile/Profile';
 import Login from './Pages/Login/Login';
 import Register from './Pages/Register/Register';
@@ -10,12 +10,11 @@ import Forgotpassword from './Components/Forgotpassword/Forgotpassword';
 import Resetpassword from './Components/Resetpassword/Resetpassword';
 import PostSearch from './Pages/PostSearch/PostSearch';
 import Chat from './Pages/Chat/Chat';
-import { useEffect, useRef, useState } from 'react';
-import { io } from "socket.io-client";
+import { useEffect, useRef } from 'react';
 import { getUserOnline } from './Redux/getUserOnline';
 import { ToastContainer } from 'react-toastify';
 import SearchFriend from './Pages/FriendPage/FriendPage';
-import { getAllUser, getProfileUser, getUserProfile } from './Redux/apiCall';
+import { getAllUser } from './Redux/apiCall';
 import ScrollToTop from './Components/CommonComponents/ScrollToTop';
 
 function App() {

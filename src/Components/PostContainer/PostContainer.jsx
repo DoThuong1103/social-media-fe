@@ -9,11 +9,7 @@ import Time from "../CommonComponents/Time";
 import Comments from "../CommonComponents/Comments";
 import ProfileImg from "../CommonComponents/Img/ProfileImg";
 import Icon from "../CommonComponents/Img/Icon";
-
-import LikeIcon from "../../Images/like.png";
-import LikeIconActive from "../../Images/setLike.png";
 import UserImg from "../../Images/icons8-user-100.png";
-import CommentIcon from "../../Images/speech-bubble.png";
 import { TbMessageCircle2Filled } from "react-icons/tb";
 import { TbMessageCircle2 } from "react-icons/tb";
 import ShareIcon from "../../Images/share.png";

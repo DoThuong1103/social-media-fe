@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../Components/Navbar/Navbar";
 import ProfileLeftBar from "../../Components/ProfileLeftSideContainer/ProfileLeftBar";
-import ProfileRightBar from "../../Components/ProfileRightSideContainer/ProfileRightBar";
 import ProfileMainPost from "../../Components/ProfileMainPostContainer/ProfileMainPost";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -15,7 +14,6 @@ import {
 import app from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileImg from "../../Components/CommonComponents/Img/ProfileImg";
-import { tailspin } from "ldrs";
 import { notify } from "../../Redux/notify";
 import { getUserProfile } from "../../Redux/apiCall";
 
@@ -88,6 +86,7 @@ const Profile = () => {
             const progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log("Upload is " + progress + "% done");
+            // eslint-disable-next-line default-case
             switch (snapshot.state) {
               case "paused":
                 // console.log("Upload is paused");

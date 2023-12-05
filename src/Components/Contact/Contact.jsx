@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ProfileImg from "../CommonComponents/Img/ProfileImg";
@@ -13,7 +12,6 @@ const Contact = ({ setCurrentChatUser, users }) => {
   // const [lastMess, setLastMess] = useState(userDetails)
   const user = userDetails.user;
   const id = user._id;
-  const accessToken = userDetails.accessToken;
   // useEffect(() => {
   //   const getUsers = async () => {
   //     try {

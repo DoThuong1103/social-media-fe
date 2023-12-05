@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import ProfileImage from "../../Images/Profile.png";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams, Link } from "react-router-dom";

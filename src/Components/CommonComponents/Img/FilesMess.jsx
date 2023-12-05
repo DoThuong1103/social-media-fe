@@ -1,13 +1,7 @@
-import React, { useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import { AiOutlineClose } from "react-icons/ai";
+import React from "react";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
-import ProfileImg from "./ProfileImg";
-import Time from "../Time";
-import Comments from "../Comments";
 const FilesMess = ({ files }) => {
   return (
     <>
