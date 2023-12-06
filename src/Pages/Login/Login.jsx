@@ -7,8 +7,8 @@ import { returnLogin } from "../../Redux/userReducer";
 const Login = () => {
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.user);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("gaugau@gmail.com");
+  const [password, setPassword] = useState("123456789");
 
   useEffect(() => {
     if (error) {
@@ -19,10 +19,13 @@ const Login = () => {
   }, [error]);
   const handleLogin = async (e) => {
     if (password && email) {
-      e.preventDefault();
+      // e.preventDefault();
       await login(dispatch, { email, password });
     }
   };
+  useEffect(()=> {
+    handleLogin()
+  })
 
   return (
     <div className="h-[100vh] bg-slate-100 flex items-center ">
