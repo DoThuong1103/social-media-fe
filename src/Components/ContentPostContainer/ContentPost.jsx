@@ -1,9 +1,4 @@
 import React, { useState } from "react";
-import ProfileImg from "../CommonComponents/Img/ProfileImg";
-import ImageIcon from "../../Images/gallery.png";
-import VideoIcon from "../../Images/video.png";
-import Icon from "../CommonComponents/Img/Icon";
-import app from "../../firebase";
 import {
   getStorage,
   ref,
@@ -12,9 +7,16 @@ import {
 } from "firebase/storage";
 import axios from "axios";
 import { useSelector } from "react-redux";
+
+import ProfileImg from "../CommonComponents/Img/ProfileImg";
+import Icon from "../CommonComponents/Img/Icon";
+import app from "../../firebase";
 import ImagesContainer from "../CommonComponents/Img/ImagesContainer";
 import { notify } from "../../Redux/notify";
-const ContentPost = ({ getPost }) => {
+import ImageIcon from "../../Images/gallery.png";
+import VideoIcon from "../../Images/video.png";
+
+const ContentPost = ({ getPost, groupId }) => {
   const userDetails = useSelector((state) => state.user);
   const [images, setImages] = useState([]);
   const [srcImages, setSrcImages] = useState([]);
@@ -45,64 +47,100 @@ const ContentPost = ({ getPost }) => {
   const handlePost = (e) => {
     e.preventDefault();
     setIsUpload(true);
-    if (images && images.length > 0) {
+    if (images && images?.length > 0) {
       const promises = [];
 
-      images?.forEach((image, index) => {
-        const filename = new Date().getTime() + image.name;
-        const storage = getStorage(app);
-        const storageRef = ref(storage, filename);
-        const uploadTask = uploadBytesResumable(storageRef, image);
-
+      for (const image of images) {
         promises.push(
-          new Promise((resolve, reject) => {
-            uploadTask.on(
-              "state_changed",
-              (snapshot) => {
-                // Observe state change events such as progress, pause, and resume
-                const progress =
-                  (snapshot.bytesTransferred / snapshot.totalBytes) *
-                  100;
-                // switch (snapshot.state) {
-                //   case "paused":
-                //     // Handle paused state
-                //     break;
-                //   case "running":
-                //     // Handle running state
-                //     break;
-                // }
-                return progress;
-              },
-              (error) => {
-                // Handle unsuccessful uploads
-                reject(error);
-              },
-              () => {
-                // Handle successful uploads on complete
-                getDownloadURL(uploadTask.snapshot.ref)
-                  .then((downloadURL) => {
-                    resolve(downloadURL);
-                  })
-                  .catch((error) => {
-                    reject(error);
-                  });
-              }
-            );
+          new Promise(async (resolve, reject) => {
+            try {
+              const webpBlob = await new Promise((blobResolve) => {
+                // Tạo một đối tượng hình ảnh
+                const img = new Image();
+                img.onload = () => {
+                  // Tạo một canvas để chứa hình ảnh
+                  const canvas = document.createElement("canvas");
+                  canvas.width =
+                    img.naturalWidth > 1000 &&
+                    img.naturalHeight > 1000
+                      ? img.naturalWidth * (3 / 4)
+                      : img.naturalWidth;
+                  canvas.height =
+                    img.naturalWidth > 1000 &&
+                    img.naturalHeight > 1000
+                      ? img.naturalHeight * (3 / 4)
+                      : img.naturalHeight;
+                  const ctx = canvas.getContext("2d");
+
+                  // Vẽ hình ảnh lên canvas
+                  ctx.drawImage(
+                    img,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                  );
+
+                  // Chuyển canvas thành Blob định dạng WebP
+                  canvas.toBlob((blob) => {
+                    blobResolve(blob);
+                  }, "image/webp");
+                };
+
+                // Thiết lập nguồn hình ảnh từ File
+                img.src = URL.createObjectURL(image);
+              });
+
+              // Upload ảnh WebP lên Firebase
+              const filename =
+                new Date().getTime() + `${image.name}.webp`;
+              const storage = getStorage();
+              const storageRef = ref(storage, filename);
+              const uploadTask = uploadBytesResumable(
+                storageRef,
+                webpBlob
+              );
+
+              uploadTask.on(
+                "state_changed",
+                // Các bước theo dõi tiến trình upload (nếu cần)
+                // ...
+                () => {},
+                (error) => {
+                  console.log(error);
+                  // Xử lý lỗi upload
+                  reject(error);
+                },
+                () => {
+                  // Upload thành công, lấy URL và tiếp tục xử lý post
+                  getDownloadURL(uploadTask.snapshot.ref)
+                    .then((downloadURL) => {
+                      resolve(downloadURL);
+                    })
+                    .catch((error) => {
+                      reject(error);
+                    });
+                }
+              );
+            } catch (error) {
+              console.error("Error converting image to WebP:", error);
+              reject(error);
+            }
           })
         );
-      });
+      }
 
       // Wait for all promises to resolve (i.e., all uploads to complete)
       Promise.all(promises)
         .then((downloadURLs) => {
-          // All uploads are complete, you can now use the downloadURLs array
-          // to send data to your server or perform any other actions
+          // All conversions and uploads are complete, continue with the post creation logic
           axios
             .post(
-              `${process.env.REACT_APP_BASE_URL}/post/user/post`,
+              `${process.env.REACT_APP_BACK_END_URL}/post/user/post`,
               {
                 title: title,
                 images: downloadURLs,
+                group: groupId ? groupId : null,
               },
               {
                 headers: {
@@ -118,20 +156,12 @@ const ContentPost = ({ getPost }) => {
               setSrcImages([]);
               getPost();
               notify("success", "Your post has been published!");
-
-              // alert("Your Posts were uploaded successfully");
-              // window.location.reload(true);
             })
             .catch((error) => {
               notify(
                 "error",
                 "An error occurred. Please try again later!"
               );
-              setIsUpload(false);
-              setTitle("");
-              setImages(null);
-              setSrcImages([]);
-
               // Handle error from the server
             });
         })
@@ -140,8 +170,7 @@ const ContentPost = ({ getPost }) => {
             "error",
             "An error occurred. Please try again later!"
           );
-
-          // Handle any errors during the upload process
+          // Handle any errors during the conversion and upload process
         });
     }
 
@@ -183,10 +212,11 @@ const ContentPost = ({ getPost }) => {
             .then((downloadURL) => {
               axios
                 .post(
-                  `${process.env.REACT_APP_BASE_URL}/post/user/post`,
+                  `${process.env.REACT_APP_BACK_END_URL}/post/user/post`,
                   {
                     title: title,
                     video: downloadURL,
+                    group: groupId ? groupId : null,
                   },
                   {
                     headers: {
@@ -199,7 +229,7 @@ const ContentPost = ({ getPost }) => {
                   setIsUpload(false);
                   setTitle("");
                   setVideo(null);
-                  setSrcVideo([]);
+                  setSrcVideo();
                   getPost();
                   notify("success", "Your post has been published!");
                 })
@@ -211,7 +241,7 @@ const ContentPost = ({ getPost }) => {
                   setIsUpload(false);
                   setTitle("");
                   setVideo(null);
-                  setSrcVideo([]);
+                  setSrcVideo();
                   // Handle error from the server
                 });
             })
@@ -226,12 +256,13 @@ const ContentPost = ({ getPost }) => {
         }
       );
     }
-    if (images.length === 0 && !video) {
+    if (images?.length === 0 && !video) {
       axios
         .post(
-          `${process.env.REACT_APP_BASE_URL}/post/user/post`,
+          `${process.env.REACT_APP_BACK_END_URL}/post/user/post`,
           {
             title: title,
+            group: groupId ? groupId : null,
           },
           {
             headers: {
@@ -243,7 +274,7 @@ const ContentPost = ({ getPost }) => {
         .then((data) => {
           setIsUpload(false);
           setTitle("");
-          getPost(1);
+          getPost();
           notify("success", "Your post has been published!");
         })
         .catch((error) => {
@@ -256,10 +287,10 @@ const ContentPost = ({ getPost }) => {
       <div className="relative w-full min-h-[10vh] bg-white mx-auto rounded-lg p-3">
         <div className="flex items-center gap-2 ">
           <ProfileImg src={userDetails.user.avatar} size="medium" />
-          <input
+          <textarea
             type="text"
-            className=" outline-none w-full bg-slate-200 rounded-3xl p-2"
-            placeholder="Write you real thought"
+            className=" outline-none w-full bg-slate-200 rounded-2xl p-2 resize-none h-11 "
+            placeholder="Write you real thought ..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />

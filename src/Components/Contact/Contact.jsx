@@ -6,31 +6,10 @@ import Icon from "../CommonComponents/Img/Icon";
 import Time from "../CommonComponents/Time";
 
 const Contact = ({ setCurrentChatUser, users }) => {
-  // const [users, setUsers] = useState(null);
   const [dataUsers, setDataUsers] = useState(null);
   const userDetails = useSelector((state) => state.user);
-  // const [lastMess, setLastMess] = useState(userDetails)
   const user = userDetails.user;
   const id = user._id;
-  // useEffect(() => {
-  //   const getUsers = async () => {
-  //     try {
-  //       const res = await axios.get(
-  //         `http://localhost:5000/api/user/allFriend`,
-  //         {
-  //           headers: {
-  //             token: `${accessToken}`,
-  //           },
-  //         }
-  //       );
-  //       setUsers(res.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getUsers();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
   const handleShowMessage = (user) => {
     setCurrentChatUser(user);
   };
@@ -44,9 +23,10 @@ const Contact = ({ setCurrentChatUser, users }) => {
     });
     const sortedUsers = listUser?.sort(
       (a, b) =>
-        a?.comments?.comment?.createdAt -
-        b?.comments?.comment?.createdAt
+        Date.parse(b?.messages?.createdAt) -
+        Date.parse(a?.messages?.createdAt)
     );
+    console.log(sortedUsers);
     setDataUsers(sortedUsers);
   }, [users, userDetails.online]);
   return (

@@ -14,8 +14,10 @@ import { useEffect, useRef } from 'react';
 import { getUserOnline } from './Redux/getUserOnline';
 import { ToastContainer } from 'react-toastify';
 import SearchFriend from './Pages/FriendPage/FriendPage';
-import { getAllUser } from './Redux/apiCall';
+import { getAllGroup, getAllUser } from './Redux/apiCall';
 import ScrollToTop from './Components/CommonComponents/ScrollToTop';
+import VideoPage from './Pages/VideoPage/VideoPage';
+import GroupsPage from './Pages/GroupsPage/GroupsPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -28,20 +30,18 @@ function App() {
 
   useEffect(() => {
     socket.current = getUserOnline(id, dispatch);
-
     // Cleanup when the component unmounts
     return () => {
       socket.current.disconnect();
     };
   }, [dispatch, id]);
-
   // Get all user 
   useEffect(() => {
     if (accessToken) {
       getAllUser(dispatch, accessToken)
+      getAllGroup(dispatch, accessToken)
     }
   }, [accessToken, dispatch])
-
   return (
     <BrowserRouter >
       {/* <Navbar /> */}
@@ -53,6 +53,11 @@ function App() {
           <Route path="/post/:id" element={userDetails?.verified === true ? <PostSearch /> : <Navigate to={"/login"} replace={true} />}></Route>
           <Route path="/chat" element={userDetails?.verified === true ? <Chat /> : <Navigate to={"/login"} replace={true} />}></Route>
           <Route path="/friends/*" element={userDetails?.verified === true ? <SearchFriend /> : <Navigate to={"/login"} replace={true} />}></Route>
+          <Route path="/videos" element={userDetails?.verified === true ? <VideoPage /> : <Navigate to={"/login"} replace={true} />}></Route>
+          <Route path="/groups/*" element={userDetails?.verified === true ? <GroupsPage /> : <Navigate to={"/login"} replace={true} />}>
+
+          </Route>
+          {/* <Route path="/group/:id" element={userDetails?.verified === true ? <GroupsPage /> : <Navigate to={"/login"} replace={true} />}></Route> */}
         </Route>
         <Route path="/login" element={userDetails?.verified === true ? <Navigate to={"/"} replace={true} /> : <Login />}></Route>
         <Route path="/register" element={<Register />}></Route>

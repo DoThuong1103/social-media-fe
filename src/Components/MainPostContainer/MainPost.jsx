@@ -10,6 +10,7 @@ const MainPost = () => {
     result: [],
     totalPost: 0,
   });
+  const { accessToken } = useSelector((state) => state.user);
   const [isFetching, setIsFetching] = useState(false);
   const userDetails = useSelector((state) => state.user);
   const [scrollLength, setScrollLength] = useState(0);
@@ -45,14 +46,12 @@ const MainPost = () => {
     setIsFetching(true);
     try {
       let res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/post/allPost`,
+        `${process.env.REACT_APP_BACK_END_URL}/post/allPost`,
         {
           params: {
             page: visiblePosts || 1,
-            pageSize: 5,
+            pageSize: 4,
           },
-        },
-        {
           headers: {
             token: userDetails.accessToken,
           },
@@ -93,8 +92,9 @@ const MainPost = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   return (
-    <div className="flex flex-col gap-4 pb-8 md:flex-1 w-full max-w-[650px] md:mx-auto">
+    <div className="flex flex-col gap-4 pb-8 md:flex-1 w-full max-w-[650px] mx-auto">
       <ContentPost getPost={getPost} />
       <div className="flex flex-col gap-4 w-full pt-2" ref={divRef}>
         {posts?.result?.map((post) => {
@@ -107,7 +107,7 @@ const MainPost = () => {
           );
         })}
       </div>
-      {!isFetching && <PostLoading />}
+      {isFetching && <PostLoading />}
     </div>
   );
 };

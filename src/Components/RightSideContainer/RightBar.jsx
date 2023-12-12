@@ -13,7 +13,7 @@ const RightBar = () => {
     const getUsers = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/user/allFriend/${userDetails.user._id}`,
+          `${process.env.REACT_APP_BACK_END_URL}/user/allFriend/${userDetails.user._id}`,
           {
             headers: {
               token: `${accessToken}`,
@@ -42,7 +42,7 @@ const RightBar = () => {
   }, [users, userDetails.online]);
   console.log(users);
   return (
-    <div className="hidden lg:block sticky top-[80px] w-full">
+    <div className="hidden md:block sticky top-[80px] w-full">
       <div className="flex flex-col gap-4 w-full h-[300px] rounded-2xl px-4 mx-auto">
         <p className="text-xl font-bold ">Contact</p>
         <div className="flex flex-col gap-2 w-full">

@@ -18,7 +18,7 @@ const MainPost = () => {
     setIsFetching(true);
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/${
+        `${process.env.REACT_APP_BACK_END_URL}/user/${
           splat === "" ? `allFriend/${userDetails?.user?._id}` : splat
         }`,
         {
@@ -41,7 +41,7 @@ const MainPost = () => {
   const handleRequest = async (params) => {
     try {
       await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/user/${params}`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/${params}`,
         {},
         {
           headers: {

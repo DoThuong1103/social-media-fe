@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import ProfileImg from "../CommonComponents/Img/ProfileImg";
 import { useSelector } from "react-redux";
-import { AiOutlineClose, AiOutlineSend } from "react-icons/ai";
 import { io } from "socket.io-client";
 import axios from "axios";
-import { GoFileMedia } from "react-icons/go";
 import {
   getDownloadURL,
   getStorage,
@@ -17,16 +14,31 @@ import { Navigation } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
+
+import ProfileImg from "../CommonComponents/Img/ProfileImg";
 import Files from "../CommonComponents/Img/Files";
 import { notify } from "../../Redux/notify";
 import FilesMess from "../CommonComponents/Img/FilesMess";
+
+import { AiOutlineClose, AiOutlineSend } from "react-icons/ai";
+import { MdAttachFile } from "react-icons/md";
+import {
+  GoFileMedia,
+  GoVideo,
+  GoFileSubmodule,
+} from "react-icons/go";
 const ChatContainer = ({ currentChatUser, getUsers }) => {
   const [messages, setMessages] = useState(null);
   const [inputMessage, setInputMessage] = useState("");
+  const [images, setImages] = useState([]);
   const [files, setFiles] = useState([]);
+  const [srcFiles, setSrcFiles] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [srcVideos, setSrcVideos] = useState([]);
+
   const userDetails = useSelector((state) => state.user);
   const [arrivalMessage, setArrivalMessage] = useState(null);
-  const [srcFiles, setSrcFiles] = useState([]);
+  const [srcImages, setSrcImages] = useState([]);
   const [openImg, setOpenImg] = useState(false);
   const [listImg, setListImg] = useState([]);
   const [isSend, setIsSend] = useState(false);
@@ -38,13 +50,74 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
   const socket = useRef();
 
   const handleImageChange = (e) => {
-    const selectedFiles = e.target.files;
-
+    setFiles([]);
+    setSrcFiles([]);
+    setVideos([]);
+    setSrcVideos([]);
+    const selectedImages = e.target.files;
     // Convert FileList to an array
-    const filesArray = Array.from(selectedFiles);
-    setFiles(filesArray);
+    const imageArray = Array.from(selectedImages);
+    setImages(imageArray);
 
-    const fileUrls = filesArray.map((item) => ({
+    const imageUrls = imageArray.map((item) => ({
+      link: URL.createObjectURL(item),
+      name: item.name,
+      type: item.type,
+    }));
+    setSrcImages((prevFiles) => [...prevFiles, ...imageUrls]);
+  };
+
+  const handleDeleteImage = async (name) => {
+    const imageArray = await images.filter(
+      (file) => file.name !== name
+    );
+    setImages(imageArray);
+    const filterImages = await srcImages.filter(
+      (file) => file.name !== name
+    );
+    setSrcImages(filterImages);
+  };
+
+  const handleVideoChange = (e) => {
+    setFiles([]);
+    setSrcFiles([]);
+    setImages([]);
+    setSrcImages([]);
+    const selectedVideos = e.target.files;
+    // Convert FileList to an array
+    const videoArray = Array.from(selectedVideos);
+    setVideos(videoArray);
+
+    const videoUrls = videoArray.map((item) => ({
+      link: URL.createObjectURL(item),
+      name: item.name,
+      type: item.type,
+    }));
+    setSrcVideos((prevFiles) => [...prevFiles, ...videoUrls]);
+  };
+
+  const handleDeleteVideo = async (name) => {
+    const videoArray = await videos.filter(
+      (file) => file.name !== name
+    );
+    setVideos(videoArray);
+    const filterVideos = await srcVideos.filter(
+      (file) => file.name !== name
+    );
+    setSrcVideos(filterVideos);
+  };
+
+  const handleFileChange = (e) => {
+    setImages([]);
+    setSrcImages([]);
+    setVideos([]);
+    setSrcVideos([]);
+    const selectedFiles = e.target.files;
+    // Convert FileList to an array
+    const fileArray = Array.from(selectedFiles);
+    setFiles(fileArray);
+
+    const fileUrls = fileArray.map((item) => ({
       link: URL.createObjectURL(item),
       name: item.name,
       type: item.type,
@@ -53,10 +126,10 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
   };
 
   const handleDeleteFile = async (name) => {
-    const filesArray = await files.filter(
+    const fileArray = await files.filter(
       (file) => file.name !== name
     );
-    setFiles(filesArray);
+    setImages(fileArray);
     const filterFiles = await srcFiles.filter(
       (file) => file.name !== name
     );
@@ -66,19 +139,19 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
   useEffect(() => {
     scrollRef?.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
   useEffect(() => {
     if (currentChatUser) {
-      socket.current = io(
-        "https://social-media-be-hxiw.onrender.com"
-      );
+      socket.current = io(process.env.REACT_APP_BACK_END_IO_URL);
       socket.current.emit("addUser", id);
     }
   }, [id, currentChatUser]);
+
   useEffect(() => {
     const getMessages = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/message/${id}/${currentChatUser._id}`,
+          `${process.env.REACT_APP_BACK_END_URL}/message/${id}/${currentChatUser._id}`,
           {
             headers: {
               token: `${accessToken}`,
@@ -93,38 +166,6 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
     getMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChatUser]);
-
-  // const sendMsg = () => {
-  //   if (inputMessage.trim().length > 0) {
-  //     socket.current.emit("sendMsg", {
-  //       message: inputMessage,
-  //       from: id,
-  //       to: currentChatUser._id,
-  //     });
-  //     axios
-  //       .post(
-  //         `${process.env.REACT_APP_BASE_URL}/message/msg`,
-  //         {
-  //           message: inputMessage,
-  //           from: id,
-  //           to: currentChatUser._id,
-  //         },
-  //         {
-  //           headers: {
-  //             token: `${accessToken}`,
-  //           },
-  //         }
-  //       )
-  //       .then((res) => {
-  //         setMessages([...messages, res.data]);
-  //         getUsers();
-  //         setInputMessage("");
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   }
-  // };
   useEffect(() => {
     if (socket.current) {
       socket.current.on("msg-recieve", (msg) => {
@@ -138,20 +179,159 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arrivalMessage, socket.current]);
+
   useEffect(() => {
     arrivalMessage && setMessages((pre) => [...pre, arrivalMessage]);
   }, [arrivalMessage]);
 
   const sendMsg = (e) => {
     e.preventDefault();
-    if (files && files.length > 0) {
+    if (images && images.length > 0) {
       setIsSend(true);
       const promises = [];
-      files?.forEach((image, index) => {
-        const filename = new Date().getTime() + image.name;
+      for (const image of images) {
+        promises.push(
+          new Promise(async (resolve, reject) => {
+            try {
+              const webpBlob = await new Promise((blobResolve) => {
+                // Tạo một đối tượng hình ảnh
+                const img = new Image();
+                img.onload = () => {
+                  // Tạo một canvas để chứa hình ảnh
+                  const canvas = document.createElement("canvas");
+                  canvas.width =
+                    img.naturalWidth > 1000 &&
+                    img.naturalHeight > 1000
+                      ? img.naturalWidth * (3 / 4)
+                      : img.naturalWidth;
+                  canvas.height =
+                    img.naturalWidth > 1000 &&
+                    img.naturalHeight > 1000
+                      ? img.naturalHeight * (3 / 4)
+                      : img.naturalHeight;
+                  const ctx = canvas.getContext("2d");
+
+                  // Vẽ hình ảnh lên canvas
+                  ctx.drawImage(
+                    img,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                  );
+
+                  // Chuyển canvas thành Blob định dạng WebP
+                  canvas.toBlob((blob) => {
+                    blobResolve(blob);
+                  }, "image/webp");
+                };
+
+                // Thiết lập nguồn hình ảnh từ File
+                img.src = URL.createObjectURL(image);
+              });
+
+              // Upload ảnh WebP lên Firebase
+              const filename =
+                new Date().getTime() + `${image.name}.webp`;
+              const storage = getStorage();
+              const storageRef = ref(storage, filename);
+              const uploadTask = uploadBytesResumable(
+                storageRef,
+                webpBlob
+              );
+
+              uploadTask.on(
+                "state_changed",
+                // Các bước theo dõi tiến trình upload (nếu cần)
+                // ...
+                () => {},
+                (error) => {
+                  console.log(error);
+                  // Xử lý lỗi upload
+                  reject(error);
+                },
+                () => {
+                  // Upload thành công, lấy URL và tiếp tục xử lý post
+                  getDownloadURL(uploadTask.snapshot.ref)
+                    .then((downloadURL) => {
+                      resolve(downloadURL);
+                    })
+                    .catch((error) => {
+                      reject(error);
+                    });
+                }
+              );
+            } catch (error) {
+              console.error("Error converting image to WebP:", error);
+              reject(error);
+            }
+          })
+        );
+      }
+
+      // Wait for all promises to resolve (i.e., all uploads to complete)
+      Promise.all(promises)
+        .then((downloadURLs) => {
+          // All uploads are complete, you can now use the downloadURLs array
+          // to send data to your server or perform any other actions
+          const formattedFiles = downloadURLs.map((url, index) => ({
+            link: url,
+            name: images[index].name,
+            type: images[index].type,
+          }));
+
+          socket.current.emit("sendMsg", {
+            message: inputMessage,
+            from: id,
+            to: currentChatUser._id,
+            files: formattedFiles,
+          });
+          axios
+            .post(
+              `${process.env.REACT_APP_BACK_END_URL}/message/msg`,
+              {
+                message: inputMessage ? inputMessage : "",
+                from: id,
+                to: currentChatUser._id,
+                files: formattedFiles,
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  token: userDetails.accessToken,
+                },
+              }
+            )
+            .then((data) => {
+              setMessages([...messages, data.data]);
+              setInputMessage("");
+              setImages([]);
+              setSrcImages([]);
+              setIsSend(false);
+            })
+            .catch((error) => {
+              setIsSend(false);
+              notify(
+                "error",
+                "An error occurred. Please try again later!"
+              );
+            });
+        })
+        .catch((error) => {
+          setIsSend(false);
+          notify(
+            "error",
+            "An error occurred. Please try again later!"
+          );
+        });
+    } else if (files && files.length > 0) {
+      setIsSend(true);
+      const promises = [];
+      files?.forEach((file, index) => {
+        const filename = new Date().getTime() + file.name;
         const storage = getStorage(app);
         const storageRef = ref(storage, filename);
-        const uploadTask = uploadBytesResumable(storageRef, image);
+        const uploadTask = uploadBytesResumable(storageRef, file);
 
         promises.push(
           new Promise((resolve, reject) => {
@@ -162,14 +342,14 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
                 const progress =
                   (snapshot.bytesTransferred / snapshot.totalBytes) *
                   100;
-                // switch (snapshot.state) {
-                //   case "paused":
-                //     // Handle paused state
-                //     break;
-                //   case "running":
-                //     // Handle running state
-                //     break;
-                // }
+                switch (snapshot.state) {
+                  case "paused":
+                    // Handle paused state
+                    break;
+                  case "running":
+                    // Handle running state
+                    break;
+                }
                 return progress;
               },
               (error) => {
@@ -210,7 +390,7 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
           });
           axios
             .post(
-              `${process.env.REACT_APP_BASE_URL}/message/msg`,
+              `${process.env.REACT_APP_BACK_END_URL}/message/msg`,
               {
                 message: inputMessage ? inputMessage : "",
                 from: id,
@@ -246,6 +426,110 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
             "An error occurred. Please try again later!"
           );
         });
+    } else if (videos && videos.length > 0) {
+      setIsSend(true);
+      const promises = [];
+      videos?.forEach((video, index) => {
+        const filename = new Date().getTime() + video.name;
+        const storage = getStorage(app);
+        const storageRef = ref(storage, filename);
+        const uploadTask = uploadBytesResumable(storageRef, video);
+
+        promises.push(
+          new Promise((resolve, reject) => {
+            uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                // Observe state change events such as progress, pause, and resume
+                const progress =
+                  (snapshot.bytesTransferred / snapshot.totalBytes) *
+                  100;
+                switch (snapshot.state) {
+                  case "paused":
+                    // Handle paused state
+                    break;
+                  case "running":
+                    // Handle running state
+                    break;
+                }
+                return progress;
+              },
+              (error) => {
+                // Handle unsuccessful uploads
+                reject(error);
+              },
+              () => {
+                // Handle successful uploads on complete
+                getDownloadURL(uploadTask.snapshot.ref)
+                  .then((downloadURL) => {
+                    resolve(downloadURL);
+                  })
+                  .catch((error) => {
+                    reject(error);
+                  });
+              }
+            );
+          })
+        );
+      });
+
+      // Wait for all promises to resolve (i.e., all uploads to complete)
+      Promise.all(promises).then((downloadURLs) => {
+        // All uploads are complete, you can now use the downloadURLs array
+        // to send data to your server or perform any other actions
+        console.log(downloadURLs);
+        const formattedFiles = downloadURLs.map((url, index) => ({
+          link: url,
+          name: videos[index].name,
+          type: videos[index].type,
+        }));
+
+        socket.current.emit("sendMsg", {
+          message: inputMessage,
+          from: id,
+          to: currentChatUser._id,
+          files: formattedFiles,
+        });
+        axios
+          .post(
+            `${process.env.REACT_APP_BACK_END_URL}/message/msg`,
+            {
+              message: inputMessage ? inputMessage : "",
+              from: id,
+              to: currentChatUser._id,
+              files: formattedFiles,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                token: userDetails.accessToken,
+              },
+            }
+          )
+          .then((data) => {
+            setMessages([...messages, data.data]);
+            setInputMessage("");
+            setFiles([]);
+            setSrcFiles([]);
+            setIsSend(false);
+          })
+          .catch((error) => {
+            setIsSend(false);
+            console.log(error);
+            notify(
+              "error",
+              "An error occurred. Please try again later!"
+            );
+          });
+      });
+      // .catch((error) => {
+      //   setIsSend(false);
+      //   console.log(error);
+      //   notify(
+      //     "error",
+      //     "An error occurred. Please try again later22!"
+      //   );
+      // });
     } else {
       socket.current.emit("sendMsg", {
         message: inputMessage,
@@ -254,7 +538,7 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
       });
       axios
         .post(
-          `${process.env.REACT_APP_BASE_URL}/message/msg`,
+          `${process.env.REACT_APP_BACK_END_URL}/message/msg`,
           {
             message: inputMessage,
             from: id,
@@ -283,10 +567,19 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
     setListImg(data);
   };
 
+  useEffect(() => {
+    setFiles([]);
+    setSrcFiles([]);
+    setImages([]);
+    setSrcImages([]);
+    setVideos([]);
+    setSrcVideos([]);
+  }, [currentChatUser]);
+
   return (
-    <div className="flex-1 flex flex-col items-center gap-4">
+    <div className="flex-1 flex flex-col items-center gap-4 ">
       {currentChatUser && (
-        <div className="flex px-4 items-center w-full h-16 bg-slate-500 gap-2">
+        <div className="flex px-4 items-center w-full h-[70px] bg-slate-500 gap-2 pt-2">
           <ProfileImg src={currentChatUser.avatar} size="medium" />
           <span className="text-lg">{currentChatUser.username}</span>
         </div>
@@ -366,18 +659,43 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
         </div>
         <div className="flex flex-col gap-2 w-[96%] mx-auto mb-3 py-1 bg-[#F0F0F0] rounded-lg items-start ">
           <div className="flex justify-between w-full items-center">
-            <label htmlFor="file" className="">
-              <GoFileMedia className="h-6 w-6 p-[2px] ml-2 hover:bg-[#9e9e9e] transition-all rounded-sm " />
-              <input
-                type="file"
-                name="file"
-                id="file"
-                style={{ display: "none" }}
-                // accept="image/*"
-                multiple
-                onChange={handleImageChange}
-              />
-            </label>
+            <div className="flex gap-1 items-center">
+              <label htmlFor="image" className="">
+                <GoFileMedia className="h-6 w-6 p-[2px] ml-2 hover:bg-[#9e9e9e] transition-all rounded-sm " />
+                <input
+                  type="file"
+                  name="image"
+                  id="image"
+                  style={{ display: "none" }}
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                />
+              </label>
+              <label htmlFor="video" className="">
+                <GoVideo className="h-6 w-6 p-[2px] ml-2 hover:bg-[#9e9e9e] transition-all rounded-sm " />
+                <input
+                  type="file"
+                  name="video"
+                  id="video"
+                  style={{ display: "none" }}
+                  accept="video/*"
+                  onChange={handleVideoChange}
+                />
+              </label>
+              <label htmlFor="file" className="">
+                <MdAttachFile className="h-6 w-6 p-[2px] ml-2 hover:bg-[#9e9e9e] transition-all rounded-sm" />
+                <input
+                  type="file"
+                  name="file"
+                  id="file"
+                  style={{ display: "none" }}
+                  accept=".doc, .pdf, .txt, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  multiple
+                  onChange={handleFileChange}
+                />
+              </label>
+            </div>
             <input
               type="text"
               className=" px-2 w-full bg-transparent outline-none"
@@ -387,6 +705,7 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
                 setInputMessage(e.target.value);
               }}
             />
+
             {isSend ? (
               <div className="flex items-center justify-center p-[4px] mr-2">
                 <l-tailspin
@@ -405,8 +724,14 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
               </div>
             )}
           </div>
+          {srcImages.length > 0 && (
+            <Files files={srcImages} deleteFile={handleDeleteImage} />
+          )}
           {srcFiles.length > 0 && (
             <Files files={srcFiles} deleteFile={handleDeleteFile} />
+          )}{" "}
+          {srcVideos.length > 0 && (
+            <Files files={srcVideos} deleteFile={handleDeleteVideo} />
           )}
         </div>
       </div>

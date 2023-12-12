@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams, Link } from "react-router-dom";
-// import ProfileImg from "../CommonComponents/Img/ProfileImg";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
+import dayjs from "dayjs";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
 } from "react-icons/md";
 import { BsCheck } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa";
-import dayjs from "dayjs";
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -84,29 +83,16 @@ const ProfileLeftBar = () => {
   const [bio, setBio] = useState("");
   const [day, setDay] = useState(profileUser?.birthDay);
   const [tabActive, setTabActive] = useState(true);
-  const [posts, setPosts] = useState([]);
+  const [images, setImages] = useState([]);
   const [openImg, setOpenImg] = useState(false);
 
   const accessToken = userDetails.accessToken;
-
   const isUser = userDetails.user._id === id;
-  // useEffect(() => {
-  //   const getFollowings = async () => {
-  //     try {
-  //       const res = await axios.get(
-  //         `http://localhost:5000/api/user/followings/${id}`
-  //       );
-  //       setFollowings(res.data);
-  //     } catch (error) {
-  //       console.error("Error fetching posts:", error);
-  //     }
-  //   };
-  //   getFollowings();
-  // }, [id]);
+
   const getProfileUser = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/profile/${id}`
+        `${process.env.REACT_APP_BACK_END_URL}/user/profile/${id}`
       );
       setProfileUser(res.data);
       setRelationship(res.data.relationship);
@@ -118,7 +104,7 @@ const ProfileLeftBar = () => {
   const getAllFriend = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/allFriend/${id}`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/allFriend/${id}`,
         {
           headers: {
             token: `${accessToken}`,
@@ -131,17 +117,32 @@ const ProfileLeftBar = () => {
     }
   };
 
+  const getImages = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BACK_END_URL}/post/images/${id}`,
+        {
+          headers: {
+            token: `${accessToken}`,
+          },
+        }
+      );
+      setImages(res.data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+
   useEffect(() => {
     getProfileUser();
     getAllFriend();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-  console.log(friends);
   const handleUpdateBio = () => {
     const updateBio = async () => {
       try {
         await axios.put(
-          `${process.env.REACT_APP_BASE_URL}/user/updateProfile`,
+          `${process.env.REACT_APP_BACK_END_URL}/user/updateProfile`,
           {
             profile: bio ? bio : profileUser?.profile,
             birthDay: day ? day : profileUser?.birthDay,
@@ -176,23 +177,8 @@ const ProfileLeftBar = () => {
     setDay(e.target.value);
   };
 
-  const getPost = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/post/images/${id}`,
-        {
-          headers: {
-            token: `${accessToken}`,
-          },
-        }
-      );
-      setPosts(res.data);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  };
   useEffect(() => {
-    getPost();
+    getImages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, accessToken]);
   return (
@@ -249,24 +235,6 @@ const ProfileLeftBar = () => {
               </button>
             ))}
         </div>
-        {/* Followers */}
-        {/* <div className="flex justify-between items-center">
-          <p className="text-md ">
-            Has{" "}
-            <span className="font-semibold">
-              {profileUser?.Followers?.length || 0} Followers
-            </span>
-          </p>
-        </div> */}
-        {/* Followings */}
-        {/* <div className="flex items-center gap-1">
-          <p className="text-md font-semibold">Followings: </p>{" "}
-          <p>
-            <span className="">
-              {profileUser?.Following?.length || 0}
-            </span>
-          </p>
-        </div> */}
         {/* Relationship */}
         <div className="flex flex-col gap-2 ">
           <div className="flex flex-col mt-2">
@@ -408,69 +376,6 @@ const ProfileLeftBar = () => {
             ))}
         </div>
       </div>
-      {/* <div className="flex gap-4 flex-col h-[360px] md:h-[480px] lg:h-[600px] bg-white rounded-lg py-4 overflow-hidden">
-        <div className="flex justify-around items-center">
-          <p
-            className={`text-lg font-bold text-center cursor-pointer hover:text-[#0861F2] transition-all ${
-              tabActive ? "text-[#0861F2]" : ""
-            }`}
-            onClick={() => setTabActive(true)}
-          >
-            Followers
-          </p>
-          <p
-            className={`text-lg font-bold text-center cursor-pointer hover:text-[#0861F2] transition-all ${
-              !tabActive ? "text-[#0861F2]" : ""
-            }`}
-            onClick={() => setTabActive(false)}
-          >
-            Followings
-          </p>
-        </div>
-        <div className="flex w-[200%] md:w-[560px] xl:w-[720px]">
-          <div
-            className={`w-full md:w-[280px] xl:w-[360px] grid grid-cols-3 gap-2 px-2 overflow-hidden overflow-y-scroll duration-1000 transition-all ${
-              !tabActive
-                ? "opacity-100"
-                : "translate-x-[100%] opacity-0"
-            }`}
-          >
-            {profileUser?.Following?.map((following, index) => (
-              <Link to={`/profile/${following._id}`} key={index}>
-                <img
-                  src={
-                    following.avatar ? following.avatar : ProfileImage
-                  }
-                  className="rounded-md w-full h-3/4 object-cover"
-                  alt=""
-                />
-                <p>{following.username}</p>
-              </Link>
-            ))}
-          </div>
-          <div
-            className={`w-full md:w-[280px] xl:w-[360px] grid grid-cols-3 gap-2 px-2 overflow-hidden overflow-y-scroll  duration-1000 transition-all ${
-              tabActive
-                ? "-translate-x-[100%] opacity-100"
-                : "translate-x-[100%] opacity-0"
-            }`}
-          >
-            {profileUser?.Followers?.map((follower, index) => (
-              <Link to={`/profile/${follower._id}`} key={index}>
-                <img
-                  src={
-                    follower.avatar ? follower.avatar : ProfileImage
-                  }
-                  className="rounded-md w-full h-3/4 object-cover"
-                  alt=""
-                />
-                <p>{follower.username}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div> */}
-
       {/* Friends */}
       <div className="flex gap-4 flex-col h-[360px] md:h-[480px] lg:h-[500px] bg-white rounded-lg py-4 overflow-hidden">
         <div className="flex justify-around items-center">
@@ -483,8 +388,6 @@ const ProfileLeftBar = () => {
             Friends
           </p>
         </div>
-        {/* {!tabActive && ( */}
-        {/* )} */}
         <div
           className={`w-full md:w-[280px] xl:w-[360px] grid grid-cols-3 gap-2 px-2 overflow-hidden overflow-y-scroll  duration-1000 transition-all cursor-pointer`}
         >
@@ -515,10 +418,8 @@ const ProfileLeftBar = () => {
       <div className="flex gap-4 flex-col h-[360px] md:h-[480px] lg:h-[500px] bg-white rounded-lg py-4 overflow-hidden">
         <div className="flex justify-around items-center">
           <p
-            className={`text-lg font-bold text-center cursor-pointer hover:text-[#0861F2] transition-all ${
-              tabActive ? "text-[#0861F2]" : ""
+            className={`text-lg font-bold text-center cursor-pointer text-[#0861F2] transition-all
             }`}
-            onClick={() => setTabActive(true)}
           >
             Images
           </p>
@@ -528,8 +429,8 @@ const ProfileLeftBar = () => {
         <div
           className={`w-full md:w-[280px] xl:w-[360px] grid grid-cols-3 gap-2 px-2 overflow-hidden overflow-y-scroll  duration-1000 transition-all cursor-pointer`}
         >
-          {posts?.map((post) =>
-            post.map((item, index) =>
+          {images?.map((image) =>
+            image.map((item, index) =>
               item !== "" ? (
                 <img
                   key={index}
@@ -552,8 +453,8 @@ const ProfileLeftBar = () => {
               modules={[Navigation]}
               className="flex w-full mx-auto max-h-screen"
             >
-              {posts?.map((post) =>
-                post?.map((item, index) => (
+              {images?.map((image) =>
+                image?.map((item, index) => (
                   <SwiperSlide className="my-auto w-full h-full">
                     <div className="flex items-center justify-center w-full h-full">
                       <img

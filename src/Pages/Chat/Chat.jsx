@@ -15,7 +15,7 @@ const Chat = () => {
   const getUsers = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/allFriend/${id}`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/allFriend/${id}`,
         {
           headers: {
             token: `${accessToken}`,
@@ -31,7 +31,6 @@ const Chat = () => {
     getUsers();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(users);
   return (
     <div className="flex h-screen">
       <Navbar />

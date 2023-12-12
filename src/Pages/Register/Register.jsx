@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,7 +10,7 @@ const Register = () => {
   const [phonenumber, setphonenumber] = useState("");
   const [username, setusername] = useState("");
   const [password, setpassword] = useState("");
-  const userDetails = user.user;
+  const userDetails = user;
   const navigator = useNavigate();
   const handleClick = (e) => {
     e.preventDefault();
@@ -23,8 +22,10 @@ const Register = () => {
     });
   };
   if (userDetails?.Status === "Pending") {
+    console.log(1);
     navigator("/verify/email");
   }
+  console.log(userDetails);
   return (
     <div className="h-[100vh] bg-slate-100 flex items-center ">
       <div className="flex flex-col md:flex-row justify-center gap-4 lg:gap-10 items-center m-auto w-full">

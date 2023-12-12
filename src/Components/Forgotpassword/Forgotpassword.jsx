@@ -4,7 +4,7 @@ export default function Forgotpassword() {
   const [email, setEmail] = useState('');
   const handleclick = async (e) => {
     e.preventDefault();
-    await fetch(`${process.env.REACT_APP_BASE_URL}/user/forgot/password`,
+    await fetch(`${process.env.REACT_APP_BACK_END_URL}/user/forgot/password`,
       {
         method: "POST", headers: { "Content-Type": "application/JSON" },
         body: JSON.stringify({ email: email })

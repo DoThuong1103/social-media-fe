@@ -46,27 +46,35 @@ const ImagesContainer = ({
               <img
                 src={image}
                 alt=""
-                className="h-full w-full object-cover "
+                className={`h-full w-full ${
+                  images.length < 3
+                    ? "object-contain"
+                    : "object-cover"
+                } `}
               />
             </div>
           ))}
         </div>
         <div
-          className={`h-full max-h-[500px] ${
+          className={`h-full max-h-[500px]  ${
             images.length === 4 ? "grid grid-rows-2 gap-1" : ""
           } ${images.length > 4 ? "grid grid-rows-3 gap-1" : ""}`}
         >
           {images.map((image, index) => (
             <div
-              className={`relative  ${
+              className={`relative flex  max-h-[500px]  ${
                 index % 2 === 0 && index !== 4 ? "hidden" : ""
               } ${images.length === 3 ? "h-full" : ""} ${
-                index > 4 ? " hidden" : "1"
+                index > 4 ? " hidden" : ""
               }`}
               key={index + 5}
             >
               <img
-                className="h-full w-full object-cover"
+                className={` w-full ${
+                  images.length < 3
+                    ? "object-contain"
+                    : "object-cover"
+                } `}
                 src={image}
                 alt=""
               />
@@ -114,7 +122,7 @@ const ImagesContainer = ({
                     <Time times={post.createdAt} />
                   </div>
                 </div>
-                <div>
+                <div className=" max-h-[240px] overflow-hidden overflow-y-scroll">
                   <span>{post.title}</span>
                 </div>
                 <div>

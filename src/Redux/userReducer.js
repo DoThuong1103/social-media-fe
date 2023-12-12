@@ -7,9 +7,11 @@ export const userReducer = createSlice({
     isFetching: false,
     error: false,
     allUser: null,
+    allGroup: null,
     online: [],
     accessToken: null,
-    verified: null
+    verified: null,
+    Status: null
   },
   reducers: {
     loginStart: (state) => {
@@ -23,6 +25,10 @@ export const userReducer = createSlice({
       state.accessToken = action.payload.accessToken
       state.verified = action.payload.other.verified
       state.error = false
+    },
+    signUp: (state, action) => {
+      state.user = action.payload.user
+      state.Status = action.payload.Status
     },
     loginFailure: (state) => {
       state.isFetching = false;
@@ -40,6 +46,9 @@ export const userReducer = createSlice({
     allUser: (state, action) => {
       state.allUser = action.payload
     },
+    allGroup: (state, action) => {
+      state.allGroup = action.payload
+    },
     getOnline: (state, action) => {
       state.online = action.payload
     },
@@ -49,6 +58,6 @@ export const userReducer = createSlice({
   },
 })
 
-export const { loginStart, loginSuccess, loginFailure, logout, returnLogin, allUser, getOnline, getProfile } = userReducer.actions;
+export const { loginStart, loginSuccess, loginFailure, logout, returnLogin, allUser, allGroup, getOnline, getProfile, signUp } = userReducer.actions;
 
 export default userReducer.reducer;
