@@ -25,7 +25,6 @@ import { MdAttachFile } from "react-icons/md";
 import {
   GoFileMedia,
   GoVideo,
-  GoFileSubmodule,
 } from "react-icons/go";
 const ChatContainer = ({ currentChatUser, getUsers }) => {
   const [messages, setMessages] = useState(null);
