@@ -482,7 +482,7 @@ const GroupDetail = ({
               )}
             </div>
             {isMember ? (
-              <div className="flex gap-2">
+              <div className="flex flex-col md:flex-row gap-2">
                 <button
                   className="flex gap-1 items-center bg-[#0861F2] px-3 py-1 rounded-md hover:opacity-80 text-white transition-all group"
                   onClick={() => setIsOpenInviteFriendDiaLog(true)}

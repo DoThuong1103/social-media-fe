@@ -22,10 +22,7 @@ import FilesMess from "../CommonComponents/Img/FilesMess";
 
 import { AiOutlineClose, AiOutlineSend } from "react-icons/ai";
 import { MdAttachFile } from "react-icons/md";
-import {
-  GoFileMedia,
-  GoVideo,
-} from "react-icons/go";
+import { GoFileMedia, GoVideo } from "react-icons/go";
 const ChatContainer = ({ currentChatUser, getUsers }) => {
   const [messages, setMessages] = useState(null);
   const [inputMessage, setInputMessage] = useState("");
@@ -578,7 +575,7 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
   return (
     <div className="flex-1 flex flex-col items-center gap-4 ">
       {currentChatUser && (
-        <div className="flex px-4 items-center w-full h-[70px] bg-slate-500 gap-2 pt-2">
+        <div className="flex px-4 items-center w-full h-[70px] bg-slate-500 gap-2 pt-5 md:pt-2">
           <ProfileImg src={currentChatUser.avatar} size="medium" />
           <span className="text-lg">{currentChatUser.username}</span>
         </div>
@@ -587,7 +584,7 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
         className="flex flex-col w-full h-full justify-between"
         style={{ maxHeight: "calc(100vh - 64px - 56px)" }}
       >
-        <div className="flex flex-col w-full h-full px-6 pb-2 gap-8 flex-1 overflow-hidden overflow-y-scroll chat-container">
+        <div className="flex flex-col w-full h-full px-1 md:px-6 pb-2 gap-8 flex-1 overflow-hidden overflow-y-scroll chat-container">
           {messages?.map((message, index) => (
             <div
               key={index}
@@ -624,7 +621,7 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
                 {message?.files && (
                   <>
                     <div
-                      className={`w-[40%] ${
+                      className={`w-[76%] md:w-[40%] ${
                         message.sender === id ? "ml-auto" : ""
                       }`}
                       onClick={() => {

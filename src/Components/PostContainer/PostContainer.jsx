@@ -231,14 +231,16 @@ const PostContainer = ({ post }) => {
             </button>
           </div>
           <div className="">
-            {post.images && (
-              <ImagesContainer
-                post={post}
-                images={post?.images}
-                handleComment={handleComment}
-                comments={comments}
-                setShow={true}
-              />
+            {post?.images.length > 0 && (
+              <div className="min-h-[200px]">
+                <ImagesContainer
+                  post={post}
+                  images={post?.images}
+                  handleComment={handleComment}
+                  comments={comments}
+                  setShow={true}
+                />
+              </div>
             )}
             {post?.video && (
               <video

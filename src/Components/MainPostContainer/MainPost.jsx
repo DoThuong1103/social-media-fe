@@ -34,14 +34,15 @@ const MainPost = () => {
   useEffect(() => {
     if (
       heightPost > 0 &&
-      scrollLength + 500 > heightPost &&
+      scrollLength + 1000 > heightPost &&
       !isFetching
     ) {
       showMorePosts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollLength, heightPost]);
-
+  console.log("scrollLength + 200", scrollLength + 200);
+  console.log(heightPost);
   const getPost = async () => {
     setIsFetching(true);
     try {
@@ -50,7 +51,7 @@ const MainPost = () => {
         {
           params: {
             page: visiblePosts || 1,
-            pageSize: 4,
+            pageSize: 10,
           },
           headers: {
             token: userDetails.accessToken,
