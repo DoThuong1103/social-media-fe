@@ -274,7 +274,7 @@ const PostContainer = ({ post, index }) => {
           </div>
           <div className="">
             {post?.images.length > 0 && (
-              <div className="min-h-[300px]">
+              <div className="min-h-[200px]  md:min-h-[300px]">
                 <ImagesContainer
                   post={post}
                   images={post?.images}
