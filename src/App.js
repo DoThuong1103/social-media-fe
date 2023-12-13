@@ -73,10 +73,7 @@ function App() {
           <Route path="/chat" element={userDetails?.verified === true ? <Chat /> : <Navigate to={"/login"} replace={true} />}></Route>
           <Route path="/friends/*" element={userDetails?.verified === true ? <SearchFriend /> : <Navigate to={"/login"} replace={true} />}></Route>
           <Route path="/videos" element={userDetails?.verified === true ? <VideoPage /> : <Navigate to={"/login"} replace={true} />}></Route>
-          <Route path="/groups/*" element={userDetails?.verified === true ? <GroupsPage /> : <Navigate to={"/login"} replace={true} />}>
-
-          </Route>
-          {/* <Route path="/group/:id" element={userDetails?.verified === true ? <GroupsPage /> : <Navigate to={"/login"} replace={true} />}></Route> */}
+          <Route path="/groups/*" element={userDetails?.verified === true ? <GroupsPage /> : <Navigate to={"/login"} replace={true} />}></Route>
         </Route>
         <Route path="/login" element={userDetails?.verified === true ? <Navigate to={"/"} replace={true} /> : <Login />}></Route>
         <Route path="/register" element={<Register />}></Route>

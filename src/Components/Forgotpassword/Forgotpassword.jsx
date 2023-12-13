@@ -1,29 +1,51 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
+import { notify } from "../../Redux/notify";
 
 export default function Forgotpassword() {
-  const [email, setEmail] = useState('');
-  const handleclick = async (e) => {
+  const [email, setEmail] = useState("");
+  const handleClick = async (e) => {
     e.preventDefault();
-    await fetch(`${process.env.REACT_APP_BACK_END_URL}/user/forgot/password`,
+    await fetch(
+      `${process.env.REACT_APP_BACK_END_URL}/user/forgot/password`,
       {
-        method: "POST", headers: { "Content-Type": "application/JSON" },
-        body: JSON.stringify({ email: email })
-      }).then(() => {
-        alert("We sent you a token email")
-      }).catch((error) => {
-        console.log(error);
+        method: "post",
+        headers: { "Content-Type": "application/JSON" },
+        body: JSON.stringify({ email: email }),
+      }
+    )
+      .then(() => {
+        notify("success", "Check your email to reset password");
+        // alert("We sent you a token email");
       })
-  }
+      .catch((error) => {
+        notify(
+          "error",
+          "Something went wrong. Please try again later."
+        );
+      });
+  };
   return (
-    <div style={{ width: "100vw", height: "100vh", display: 'flex', alignItems: "center", justifyContent: "center" }}>
-      <div style={{ width: "25%", padding: "20px", margin: "auto", borderRadius: "10px", backgroundColor: "black" }}>
-        <p style={{ color: "white" }}>Enter your Email</p>
-        <form style={{ display: "flex", flexDirection: "column" }}>
-          <input type={"text"} placeholder="Email" style={{ flex: 1, minWidth: "40px", margin: "10px 0px", padding: "10px", borderRadius: "10px" }} onChange={(e) => setEmail(e.target.value)} />
-          <button style={{ width: "40%", border: "none", padding: "10px 20px", backgroundColor: "white", color: "black", borderRadius: "10px", margin: "20px 0px", cursor: "pointer" }} onClick={handleclick}>Send</button>
-
-        </form>
+    <div className="w-screen h-screen flex items-center justify-center ">
+      <div className="flex flex-col gap-4 w-[90%] mx-auto xs:w-[360px] h-[240px] bg-black rounded px-4 py-6">
+        <p className="text-white text-2xl font-semibold">
+          Enter your email!
+        </p>
+        <input
+          type="text"
+          className="w-full bg-white outline-none py-1 px-2 rounded "
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+        />
+        <button
+          className="bg-white py-1 px-2 w-20 rounded hover:opacity-80 transition-all"
+          onClick={handleClick}
+        >
+          Send
+        </button>
       </div>
     </div>
-  )
+  );
 }

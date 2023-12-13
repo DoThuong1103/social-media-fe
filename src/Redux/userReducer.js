@@ -11,7 +11,6 @@ export const userReducer = createSlice({
     online: [],
     accessToken: null,
     verified: null,
-    Status: null
   },
   reducers: {
     loginStart: (state) => {
@@ -28,7 +27,6 @@ export const userReducer = createSlice({
     },
     signUp: (state, action) => {
       state.user = action.payload.user
-      state.Status = action.payload.Status
     },
     loginFailure: (state) => {
       state.isFetching = false;
