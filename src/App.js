@@ -28,8 +28,6 @@ function App() {
   const socket = useRef();
   const id = user?._id;
 
-
-
   useEffect(() => {
     socket.current = getUserOnline(id, dispatch);
     // Cleanup when the component unmounts

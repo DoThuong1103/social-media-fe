@@ -34,7 +34,7 @@ const Contact = ({ setCurrentChatUser, users }) => {
     <div
       className={`flex flex-col gap-4 ${
         isOpen ? "w-[200px]" : "w-[50px]"
-      } w-[300px] bg-slate-200 items-center pt-6 `}
+      } md:w-[300px] bg-slate-200 items-center pt-6 `}
     >
       <div className="flex flex-col gap-2 items-center">
         <div

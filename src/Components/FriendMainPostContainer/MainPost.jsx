@@ -81,9 +81,11 @@ const MainPost = () => {
           ></l-tailspin>
         </div>
       )}
-      {!isFetching && (
+      {!isFetching && friends?.length > 0 && (
         <div className="w-full h-full flex flex-col p-4 gap-10">
-          <span className="font-bold text-3xl">{title}</span>
+          <span className="font-bold text-3xl">
+            {title}({friends?.length || 0})
+          </span>
           <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pb-8">
             {friends?.map((friend, index) => (
               <div
@@ -160,6 +162,13 @@ const MainPost = () => {
               </div>
             ))}
           </div>
+        </div>
+      )}
+      {friends?.length === 0 && (
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="text-2xl text-[#aaa] font-semibold">
+            No {title === "All Friends" ? "friends" : title}
+          </span>
         </div>
       )}
     </div>
