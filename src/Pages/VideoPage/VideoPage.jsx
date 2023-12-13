@@ -24,6 +24,7 @@ const VideoPage = () => {
       setVisiblePosts((prevVisiblePosts) => prevVisiblePosts + 1);
     }
   };
+
   const getPost = async () => {
     setIsFetching(true);
     try {
@@ -34,8 +35,6 @@ const VideoPage = () => {
             page: visiblePosts || 1,
             pageSize: 4,
           },
-        },
-        {
           headers: {
             token: userDetails.accessToken,
           },
@@ -95,6 +94,10 @@ const VideoPage = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // useEffect(() => {
+  //   window.location.reload();
+  // }, []);
   return (
     <div className="bg-slate-200 min-h-screen scroll-smooth">
       <Navbar />
@@ -107,12 +110,13 @@ const VideoPage = () => {
             className="flex flex-col gap-4 w-full pt-2"
             ref={divRef}
           >
-            {posts?.result?.map((post) => {
+            {posts?.result?.map((post, index) => {
               return (
                 <PostContainer
                   key={post._id}
                   post={post}
                   getPost={getPost}
+                  index={index}
                 />
               );
             })}

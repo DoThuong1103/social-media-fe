@@ -3,15 +3,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import coverImageDefault from "../../Images/groups-default.png";
 import { GoPlus } from "react-icons/go";
-import InviteFriend from "./InviteFriend";
 import ContentPost from "../ContentPostContainer/ContentPost";
 import PostContainer from "../PostContainer/PostContainer";
 import PostLoading from "../CommonComponents/PostLoading/PostLoading";
 import SearchIcon from "../../Images/search.png";
 import { IoMdCloseCircle } from "react-icons/io";
 import Icon from "../CommonComponents/Img/Icon";
-import ProfileImg from "../CommonComponents/Img/ProfileImg";
-import MoreOption from "../../Images/more.png";
 import MemberContainer from "../MemberContainer/MemberContainer";
 import { MdOutlineHorizontalRule } from "react-icons/md";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -80,7 +77,6 @@ const GroupDetail = ({
   const isMember =
     isAdmin ||
     groupDetail?.users?.some((item) => item?.user?._id === user?._id);
-  console.log(isMember);
   const getGroupDetail = async () => {
     try {
       const res = await axios.get(
@@ -152,7 +148,6 @@ const GroupDetail = ({
   useEffect(() => {
     if (tabActive === "image") {
       getImages();
-      console.log("getImage");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabActive]);
@@ -211,6 +206,7 @@ const GroupDetail = ({
         currentDiv.removeEventListener("scroll", handleScroll);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [divRef, posts]);
 
   useEffect(() => {
@@ -221,7 +217,6 @@ const GroupDetail = ({
           current.scrollTop + current.clientHeight + 150 >=
           current.scrollHeight
         ) {
-          console.log("scrolling...");
           showMoreMembers();
         }
       }

@@ -40,7 +40,6 @@ const RightBar = () => {
     );
     setDataUsers(sortedUsers);
   }, [users, userDetails.online]);
-  console.log(users);
   return (
     <div className="hidden md:block sticky top-[80px] w-full">
       <div className="flex flex-col gap-4 w-full h-[300px] rounded-2xl px-4 mx-auto">

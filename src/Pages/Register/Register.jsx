@@ -22,10 +22,8 @@ const Register = () => {
     });
   };
   if (userDetails?.Status === "Pending") {
-    console.log(1);
     navigator("/verify/email");
   }
-  console.log(userDetails);
   return (
     <div className="h-[100vh] bg-slate-100 flex items-center ">
       <div className="flex flex-col md:flex-row justify-center gap-4 lg:gap-10 items-center m-auto w-full">

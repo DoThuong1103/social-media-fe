@@ -10,7 +10,6 @@ const MainPost = () => {
     result: [],
     totalPost: 0,
   });
-  const { accessToken } = useSelector((state) => state.user);
   const [isFetching, setIsFetching] = useState(false);
   const userDetails = useSelector((state) => state.user);
   const [scrollLength, setScrollLength] = useState(0);
@@ -41,8 +40,6 @@ const MainPost = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollLength, heightPost]);
-  console.log("scrollLength + 200", scrollLength + 200);
-  console.log(heightPost);
   const getPost = async () => {
     setIsFetching(true);
     try {

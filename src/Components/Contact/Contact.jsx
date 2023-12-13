@@ -28,7 +28,6 @@ const Contact = ({ setCurrentChatUser, users }) => {
         Date.parse(b?.messages?.createdAt) -
         Date.parse(a?.messages?.createdAt)
     );
-    console.log(sortedUsers);
     setDataUsers(sortedUsers);
   }, [users, userDetails.online]);
   return (

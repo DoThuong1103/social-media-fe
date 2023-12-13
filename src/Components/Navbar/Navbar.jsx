@@ -23,7 +23,6 @@ const Navbar = () => {
   const allGroupData = userDetails?.allGroup;
   const data = allUserData?.concat(allGroupData);
   const searchData = data;
-  console.log(searchData);
 
   const countNotification = [];
 
@@ -32,12 +31,14 @@ const Navbar = () => {
   const [notifications, setNotifications] = useState();
   const [isShowNotification, setIsShowNotification] = useState(false);
   const [isShowSearchInput, setIsShowSearchInput] = useState(false);
-  console.log(searchResults);
+
+  let params = useParams();
+  // eslint-disable-next-line no-unused-vars
+  const { org, "*": splat } = params;
+
   useEffect(() => {
     if (!searchData) return;
-
     const clonedData = searchData?.map((item) => ({ ...item }));
-
     const sortedData = clonedData?.sort((a, b) =>
       (a?.username || a?.groupName)?.localeCompare(
         b?.username || b?.groupName,
@@ -54,6 +55,7 @@ const Navbar = () => {
         ?.includes(searchTerm?.toLowerCase())
     );
     setSearchResults(results);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
   const handleLogout = () => {
     dispatch(logout());
@@ -123,7 +125,7 @@ const Navbar = () => {
       window.location.reload();
     }
   };
-
+  console.log(window.location.pathname);
   return (
     <div className="fixed top-0 h-18 md:h-16 flex flex-col w-full bg-white rounded-b-xl z-50 p-2 md:px-4 lg:px-8 ">
       <div className="flex justify-between items-center text-left w-full md:hidden">
@@ -280,10 +282,7 @@ const Navbar = () => {
                       to={`/profile/${item?._id}`}
                       className="flex flex-col gap-1"
                     >
-                      <div
-                        className="flex gap-2 items-center w-full cursor-pointer"
-                        // onClick={() => console.log("1", item)}
-                      >
+                      <div className="flex gap-2 items-center w-full cursor-pointer">
                         <ProfileImg src={item?.avatar} />
                         <p className="">{item?.username}</p>
                       </div>
@@ -294,10 +293,7 @@ const Navbar = () => {
                       to={`/groups/detail/${item?._id}`}
                       className="flex flex-col gap-1"
                     >
-                      <div
-                        className="flex gap-2 items-center w-full cursor-pointer"
-                        // onClick={() => console.log("1", item)}
-                      >
+                      <div className="flex gap-2 items-center w-full cursor-pointer">
                         <ProfileImg src={item?.coverImage} />
                         <p className="">
                           {item?.groupName}
@@ -341,10 +337,7 @@ const Navbar = () => {
                       to={`profile/${item?._id}`}
                       className="flex flex-col gap-1"
                     >
-                      <div
-                        className="flex gap-2 items-center w-full cursor-pointer"
-                        // onClick={() => console.log("1", item)}
-                      >
+                      <div className="flex gap-2 items-center w-full cursor-pointer">
                         <ProfileImg src={item?.avatar} />
                         <p className="">{item?.username}</p>
                       </div>
@@ -364,7 +357,11 @@ const Navbar = () => {
         <div className="mx-auto flex justify-between w-full xxs:gap-2 xs:gap-4 col-span-5 md:col-span-1">
           <Link
             to="/"
-            className="px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all"
+            className={`${
+              window.location.pathname === "/"
+                ? "bg-slate-200 text-[#0861F2]"
+                : ""
+            } px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all`}
             onClick={() =>
               window.location.pathname === "/" &&
               window.location.reload()
@@ -374,7 +371,11 @@ const Navbar = () => {
           </Link>
           <Link
             to="/friends"
-            className="px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all"
+            className={`${
+              window.location.pathname.includes("friends")
+                ? "bg-slate-200 text-[#0861F2]"
+                : ""
+            } px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all`}
             onClick={() =>
               window.location.pathname.includes("friends") &&
               window.location.reload()
@@ -384,7 +385,11 @@ const Navbar = () => {
           </Link>
           <Link
             to="/videos"
-            className="px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all"
+            className={`${
+              window.location.pathname.includes("videos")
+                ? "bg-slate-200 text-[#0861F2]"
+                : ""
+            } px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all`}
             onClick={() =>
               window.location.pathname.includes("videos") &&
               window.location.reload()
@@ -394,7 +399,11 @@ const Navbar = () => {
           </Link>
           <Link
             to="/groups"
-            className="px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all"
+            className={`${
+              window.location.pathname.includes("groups")
+                ? "bg-slate-200 text-[#0861F2]"
+                : ""
+            } px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all`}
             onClick={() =>
               window.location.pathname.includes("groups") &&
               window.location.reload()

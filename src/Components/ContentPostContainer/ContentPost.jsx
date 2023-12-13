@@ -298,7 +298,7 @@ const ContentPost = ({ getPost, groupId }) => {
         {isUpload ? (
           <div className="absolute top-0 left-0 flex justify-center items-center w-full h-full bg-slate-300 opacity-40 z-10">
             <l-tailspin
-              size="20"
+              size="28"
               stroke="3"
               speed="1"
               color="black"

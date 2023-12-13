@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { tailspin } from "ldrs";
 import { Link, useParams } from "react-router-dom";
@@ -16,11 +16,13 @@ import ShareIcon from "../../Images/share.png";
 import MoreOption from "../../Images/more.png";
 import { FaHeart } from "react-icons/fa6";
 import coverImage from "../../Images/groups-default.png";
+import VisibilitySensor from "react-visibility-sensor";
+import { IoWarningOutline } from "react-icons/io5";
 tailspin.register();
 
 // Default values shown
 
-const PostContainer = ({ post }) => {
+const PostContainer = ({ post, index }) => {
   const userDetails = useSelector((state) => state.user);
   const userId = userDetails.user._id;
   const accessToken = userDetails.accessToken;
@@ -31,7 +33,12 @@ const PostContainer = ({ post }) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoadLike, setIsLoadLike] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const videoRef = React.useRef(null);
+  console.log(index);
   let params = useParams();
   // eslint-disable-next-line no-unused-vars
   const { org, "*": splat } = params;
@@ -127,6 +134,41 @@ const PostContainer = ({ post }) => {
       />
     );
   };
+  // useEffect(() => {
+  //   // Thực hiện scroll ngay khi component được render lần đầu tiên
+  //   window.scrollTo(0, 1);
+  // }, []);
+
+  useEffect(() => {
+    if (window.scrollY > 5 && !error && !loading) {
+      if (isVisible) {
+        videoRef?.current?.play();
+      } else {
+        videoRef?.current?.pause();
+      }
+    }
+  }, [isVisible, loading, error]);
+
+  let vid = document.getElementById("firstVideo");
+  setTimeout(() => {
+    vid?.play();
+  }, 1000);
+
+  const handleVideoError = () => {
+    setError(true);
+    setLoading(false);
+  };
+
+  const handleVideoLoadedData = () => {
+    setLoading(false);
+    console.log("Dữ liệu video đã được tải thành công.");
+  };
+
+  const handleVideoLoadStart = () => {
+    setLoading(true);
+    console.log("Bắt đầu tải dữ liệu video.");
+  };
+
   return (
     <div>
       <div className="w-full mx-auto bg-white rounded-lg p-3 pb-0">
@@ -232,7 +274,7 @@ const PostContainer = ({ post }) => {
           </div>
           <div className="">
             {post?.images.length > 0 && (
-              <div className="min-h-[200px]">
+              <div className="min-h-[300px]">
                 <ImagesContainer
                   post={post}
                   images={post?.images}
@@ -243,12 +285,38 @@ const PostContainer = ({ post }) => {
               </div>
             )}
             {post?.video && (
-              <video
-                className="w-full h-full max-h-[500px] rounded-sm"
-                controls
+              <VisibilitySensor
+                onChange={(isVisible) => setIsVisible(isVisible)}
               >
-                <source src={`${post?.video}`} type="video/mp4" />
-              </video>
+                <div>
+                  {error && (
+                    <div className="relative flex justify-center items-center w-full h-full max-h-[500px] rounded-sm bg-black">
+                      <video className="w-full h-full max-h-[500px] rounded-sm"></video>
+                      <div className="absolute flex gap-2 items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white z-10">
+                        <IoWarningOutline />{" "}
+                        <span>Có lỗi xảy ra khi phát video.</span>
+                      </div>
+                    </div>
+                  )}
+                  {!error && (
+                    <video
+                      className="w-full h-full max-h-[500px] rounded-sm"
+                      controls
+                      muted={index === 0 ? true : false}
+                      autoPlay={index === 0 ? true : false}
+                      onError={handleVideoError}
+                      onLoadStart={handleVideoLoadStart}
+                      onLoadedData={handleVideoLoadedData}
+                      ref={videoRef}
+                    >
+                      <source
+                        src={`${post?.video}`}
+                        type="video/mp4"
+                      />
+                    </video>
+                  )}
+                </div>
+              </VisibilitySensor>
             )}
           </div>
           <div className="flex md:hidden justify-between items-center">

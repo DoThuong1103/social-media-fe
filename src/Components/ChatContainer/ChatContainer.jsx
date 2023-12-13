@@ -338,6 +338,7 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
                 const progress =
                   (snapshot.bytesTransferred / snapshot.totalBytes) *
                   100;
+                // eslint-disable-next-line default-case
                 switch (snapshot.state) {
                   case "paused":
                     // Handle paused state
@@ -436,10 +437,10 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
             uploadTask.on(
               "state_changed",
               (snapshot) => {
-                // Observe state change events such as progress, pause, and resume
                 const progress =
                   (snapshot.bytesTransferred / snapshot.totalBytes) *
                   100;
+                // eslint-disable-next-line default-case
                 switch (snapshot.state) {
                   case "paused":
                     // Handle paused state
@@ -451,7 +452,6 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
                 return progress;
               },
               (error) => {
-                // Handle unsuccessful uploads
                 reject(error);
               },
               () => {
@@ -473,7 +473,6 @@ const ChatContainer = ({ currentChatUser, getUsers }) => {
       Promise.all(promises).then((downloadURLs) => {
         // All uploads are complete, you can now use the downloadURLs array
         // to send data to your server or perform any other actions
-        console.log(downloadURLs);
         const formattedFiles = downloadURLs.map((url, index) => ({
           link: url,
           name: videos[index].name,

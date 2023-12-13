@@ -62,8 +62,6 @@ const FeedGroups = () => {
       setVisiblePosts((prevVisiblePosts) => prevVisiblePosts + 1);
     }
   };
-  console.log(posts?.result?.length);
-  console.log(posts?.totalPost);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,6 +92,7 @@ const FeedGroups = () => {
         currentDiv.removeEventListener("scroll", handleScroll);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [divRef, posts]);
   console.log();
   return posts.totalPost === 0 && !isFetching ? (
