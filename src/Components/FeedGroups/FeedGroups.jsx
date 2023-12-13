@@ -92,7 +92,7 @@ const FeedGroups = () => {
         currentDiv.removeEventListener("scroll", handleScroll);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [divRef, posts]);
   console.log();
   return posts.totalPost === 0 && !isFetching ? (
@@ -107,7 +107,8 @@ const FeedGroups = () => {
       className="w-full flex-1 flex flex-col gap-4 overflow-hidden overflow-y-scroll max-h-screen -mr-2 overflow-x-hidden py-8 "
       ref={divRef}
     >
-      <div className="max-w-[650px] mx-auto flex flex-col gap-2 px-2 sm:px-10 w-full">
+      <div className="max-w-[650px] 2xl:max-w-[800px]  mx-auto flex flex-col gap-2 px-2 sm:px-10 w-full">
+        {isFetching && <PostLoading />}
         <div className="flex flex-col gap-4 w-full pt-2" id="test">
           {posts?.result?.map((post) => {
             return (
@@ -119,7 +120,6 @@ const FeedGroups = () => {
             );
           })}
         </div>
-        {isFetching && <PostLoading />}
       </div>
     </div>
   );

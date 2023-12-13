@@ -114,7 +114,7 @@ const LeftBar = () => {
   };
   return (
     <div className="hidden md:flex sticky top-[80px] flex-col h-screen">
-      <div className="flex flex-col gap-4 w-[240px] lg:w-[280px] h-2/5 bg-white rounded-2xl py-2 pl-2 lg:px-4 mx-auto">
+      <div className="flex flex-col gap-4 w-[240px] lg:w-[280px] xl:w-[300px] h-2/5 bg-white rounded-2xl py-2 pl-2 lg:px-4 mx-auto">
         <div className="flex justify-between items-end">
           <p className="text-xl font-bold ">Suggested for you</p>
           <Link to={"/friends/suggestions"}>
@@ -134,7 +134,7 @@ const LeftBar = () => {
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-4 w-[240px] lg:w-[280px] h-2/5 bg-white mt-6 rounded-2xl py-2 pl-2 lg:px-4 mx-auto">
+      <div className="flex flex-col gap-4 w-[240px] lg:w-[280px] xl:w-[300px]  h-2/5 bg-white mt-6 rounded-2xl py-2 pl-2 lg:px-4 mx-auto">
         <div className="flex justify-between items-end">
           <p className="text-xl font-bold ">Friend Requests</p>
           <Link to={"/friends/friendRequest"}>

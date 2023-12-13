@@ -105,7 +105,8 @@ const VideoPage = () => {
         <div className="hidden md:block sticky top-20">
           <LeftBar />
         </div>
-        <div className="flex flex-col gap-4 pb-8 md:flex-1 w-full max-w-[650px] mx-auto">
+        <div className="flex flex-col gap-4 pb-8 md:flex-1 w-full max-w-[650px] 3xl:max-w-[800px]  mx-auto">
+          {isFetching && <PostLoading />}
           {posts?.result.length === 0 && !isFetching && (
             <div className="w-full flex justify-center">
               <h1 className="text-3xl font-bold">No Video Posts</h1>
@@ -126,7 +127,6 @@ const VideoPage = () => {
               );
             })}
           </div>
-          {isFetching && <PostLoading />}
         </div>
         <div className="hidden md:block sticky top-20 md:w-1/5">
           <RightBar />

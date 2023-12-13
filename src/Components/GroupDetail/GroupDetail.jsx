@@ -527,7 +527,7 @@ const GroupDetail = ({
         </div>
       </div>
       {tabActive === "discussion" && (
-        <div className="max-w-[650px] mx-auto flex flex-col gap-2 px-2 sm:px-10 w-full">
+        <div className="max-w-[650px] 2xl:max-w-[800px]  mx-auto flex flex-col gap-2 px-2 sm:px-10 w-full">
           {isMember && (
             <div>
               <ContentPost groupId={groupId} getPost={getPost} />

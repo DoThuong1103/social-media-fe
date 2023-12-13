@@ -55,7 +55,7 @@ const Navbar = () => {
         ?.includes(searchTerm?.toLowerCase())
     );
     setSearchResults(results);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
   const handleLogout = () => {
     dispatch(logout());
@@ -236,12 +236,12 @@ const Navbar = () => {
       </div>
       <div className=" grid grid-cols-6 md:grid-cols-3 content-center items-center w-full m-auto justify-around md:justify-between ">
         {/* LeftNav */}
-        <div className="flex gap-2 md:gap-4 items-center">
+        <div className="flex gap-2 md:gap-2 items-center">
           {/* Logo */}
           <div className="hidden md:block">
             <Link to="/">
               <p
-                className="text-lg md:text-xl  lg:text-3xl text-center font-bold"
+                className="text-lg md:text-lg  lg:text-3xl text-center font-bold"
                 onClick={reloadPage}
               >
                 Soc<span className="text-blue-500">ial</span>
@@ -261,7 +261,7 @@ const Navbar = () => {
                 }
               />
               <input
-                className="bg-transparent hidden md:block md:w-[160px] lg:w-[240px] rounded-md p-[2px] outline-none"
+                className="bg-transparent hidden md:block md:w-[80px] lg:w-[160px] xl:w-[200px] rounded-md p-[2px] outline-none"
                 type="text"
                 placeholder="Search your friends"
                 value={searchTerm}
@@ -361,7 +361,7 @@ const Navbar = () => {
               window.location.pathname === "/"
                 ? "bg-slate-200 text-[#0861F2]"
                 : ""
-            } px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all`}
+            } px-2 py-1 md:px-3 md:py-2 lg:px-6 xl:gap-8 rounded group hover:bg-slate-200 transition-all`}
             onClick={() =>
               window.location.pathname === "/" &&
               window.location.reload()
@@ -375,7 +375,7 @@ const Navbar = () => {
               window.location.pathname.includes("friends")
                 ? "bg-slate-200 text-[#0861F2]"
                 : ""
-            } px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all`}
+            } px-2 py-1 md:px-3 md:py-2 lg:px-6 xl:gap-8 rounded group hover:bg-slate-200 transition-all`}
             onClick={() =>
               window.location.pathname.includes("friends") &&
               window.location.reload()
@@ -389,7 +389,7 @@ const Navbar = () => {
               window.location.pathname.includes("videos")
                 ? "bg-slate-200 text-[#0861F2]"
                 : ""
-            } px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all`}
+            } px-2 py-1 md:px-3 md:py-2 lg:px-6 xl:gap-8 rounded group hover:bg-slate-200 transition-all`}
             onClick={() =>
               window.location.pathname.includes("videos") &&
               window.location.reload()
@@ -403,7 +403,7 @@ const Navbar = () => {
               window.location.pathname.includes("groups")
                 ? "bg-slate-200 text-[#0861F2]"
                 : ""
-            } px-2 py-1 md:px-6 md:py-2 lg:px-8 rounded group hover:bg-slate-200 transition-all`}
+            } px-2 py-1 md:px-3 md:py-2 lg:px-6 xl:gap-8 rounded group hover:bg-slate-200 transition-all`}
             onClick={() =>
               window.location.pathname.includes("groups") &&
               window.location.reload()
@@ -496,7 +496,7 @@ const Navbar = () => {
                 size="medium"
                 alt="  "
               />
-              <p className="hidden md:block">
+              <p className="hidden lg:block">
                 {userDetails?.user?.username}
               </p>
             </div>

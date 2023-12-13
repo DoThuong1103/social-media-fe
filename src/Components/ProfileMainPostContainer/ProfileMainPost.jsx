@@ -107,6 +107,7 @@ const ProfileMainPost = () => {
           <ContentPost getPost={getPost} />
         </div>
       )}
+      {isFetching && <PostLoading />}
       <div className="flex flex-col gap-4 w-full" ref={divRef}>
         {!isFetching && posts && posts?.result?.length === 0 && (
           <div className="text-center font-semibold text-2xl">
@@ -117,7 +118,6 @@ const ProfileMainPost = () => {
           <PostContainer key={post._id} post={post} />
         ))}
       </div>
-      {isFetching && <PostLoading />}
     </div>
   );
 };

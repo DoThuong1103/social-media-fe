@@ -92,9 +92,10 @@ const MainPost = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4 pb-8 md:flex-1 w-full max-w-[650px] mx-auto">
+    <div className="flex flex-col gap-4 pb-8 md:flex-1 w-full max-w-[650px] 3xl:max-w-[800px] mx-auto">
       <ContentPost getPost={getPost} />
-      <div className="flex flex-col gap-4 w-full pt-2" ref={divRef}>
+      {isFetching && <PostLoading />}
+      <div className="flex flex-col gap-4 w-full" ref={divRef}>
         {posts?.result?.map((post) => {
           return (
             <PostContainer
@@ -105,7 +106,6 @@ const MainPost = () => {
           );
         })}
       </div>
-      {isFetching && <PostLoading />}
     </div>
   );
 };

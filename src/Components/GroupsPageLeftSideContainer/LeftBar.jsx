@@ -30,7 +30,7 @@ const LeftBar = ({ setIsOpenDialogCreateGroup, splat }) => {
     <div
       className={`flex flex-col bg-white ${
         isOpen ? "w-[200px]" : "w-fit"
-      }  md:w-[240px] lg:w-[280px] pt-8 md:pt-6 py-4 px-2 shadow-md transition-all`}
+      }  md:w-[240px] lg:w-[320px] 3xl:w-[400px]  pt-8 md:pt-6 py-4 px-2 shadow-md transition-all`}
     >
       <div
         className={`flex ${

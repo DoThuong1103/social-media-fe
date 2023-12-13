@@ -310,7 +310,10 @@ const ContentPost = ({ getPost, groupId }) => {
             <ImagesContainer images={srcImages} setShow={false} />
           )}
           {srcVideo && (
-            <video controls className="rounded-lg">
+            <video
+              controls
+              className="rounded-lg max-h-[600px] mx-auto"
+            >
               <source src={srcVideo} type="video/mp4" />
             </video>
           )}

@@ -36,7 +36,7 @@ const LeftBar = () => {
     <div
       className={`flex flex-col bg-white ${
         isOpen ? "w-[200px]" : "w-fit"
-      }  md:w-[300px] lg:w-[320px] pt-8 md:pt-4 py-4 px-2 shadow-md transition-all`}
+      }  md:w-[240px] lg:w-[320px] pt-8 md:pt-4 py-4 px-2 shadow-md transition-all`}
       style={{
         maxHeight: "calc(100vh - 48px)",
         height: "calc(100vh - 48px)",
