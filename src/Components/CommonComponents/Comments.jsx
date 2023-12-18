@@ -27,7 +27,7 @@ const Comments = ({ handleComment, post, comments, maxHight }) => {
     <div className="flex flex-col gap-4">
       <div className="flex gap-3 ">
         <ProfileImg src={userDetails.user.avatar} alt="" />
-        <div className="flex items-center px-2 rounded-lg flex-1 bg-slate-200">
+        <div className="flex items-center px-2 py-2 rounded-lg flex-1 bg-slate-200">
           <input
             className="w-full outline-none bg-transparent"
             type="text"

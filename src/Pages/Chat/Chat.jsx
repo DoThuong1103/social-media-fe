@@ -15,7 +15,7 @@ const Chat = () => {
   const getUsers = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/allFriend/${id}`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/allFriend/${id}`,
         {
           headers: {
             token: `${accessToken}`,
@@ -29,9 +29,8 @@ const Chat = () => {
   };
   useEffect(() => {
     getUsers();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(users);
   return (
     <div className="flex h-screen">
       <Navbar />
@@ -47,9 +46,9 @@ const Chat = () => {
           />
         ) : (
           <div className="relative w-full h-full flex items-center justify-center ">
-            <AiOutlineMessage className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-60 w-60 -z-1 text-gray-200" />
-            <span className="text-gray-400 z-10 font-bold text-xl">
-              Open your chat with your friends
+            <AiOutlineMessage className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-40 w-40 md:h-60 md:w-60 -z-1 text-gray-200" />
+            <span className="text-gray-400 z-10 font-bold text-lg md:text-xl w-full text-center">
+              Open chat with your friends
             </span>
           </div>
         )}

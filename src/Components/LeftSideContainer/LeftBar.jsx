@@ -16,7 +16,7 @@ const LeftBar = () => {
   const getSuggest = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/suggestions`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/suggestions`,
         {
           headers: {
             token: accessToken,
@@ -31,7 +31,7 @@ const LeftBar = () => {
   const getFriendRequest = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/friendRequest`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/friendRequest`,
         {
           headers: {
             token: accessToken,
@@ -55,7 +55,7 @@ const LeftBar = () => {
   const handleAcceptReq = async (id) => {
     try {
       await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/user/acceptFriend/${id}`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/acceptFriend/${id}`,
         {},
         {
           headers: {
@@ -75,7 +75,7 @@ const LeftBar = () => {
   const handleDeleteReq = async (id) => {
     try {
       await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/user/deleteRequestFriend/${id}`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/deleteRequestFriend/${id}`,
         {},
         {
           headers: {
@@ -95,7 +95,7 @@ const LeftBar = () => {
   const handleAddFriend = async (id) => {
     try {
       await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/user/addFriend/${id}`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/addFriend/${id}`,
         {},
         {
           headers: {
@@ -104,6 +104,7 @@ const LeftBar = () => {
         }
       );
       getSuggest();
+      notify("success", "Friend request has been sent successfully");
     } catch (error) {
       notify(
         "error",
@@ -112,12 +113,14 @@ const LeftBar = () => {
     }
   };
   return (
-    <div className="hidden lg:flex sticky top-[80px] flex-col h-screen">
-      <div className="flex flex-col gap-4 w-[280px] h-2/5 bg-white rounded-2xl py-2 px-4 mx-auto">
+    <div className="hidden md:flex sticky top-[80px] flex-col h-screen">
+      <div className="flex flex-col gap-4 w-[240px] lg:w-[280px] xl:w-[300px] h-2/5 bg-white rounded-2xl py-2 pl-2 lg:px-4 mx-auto">
         <div className="flex justify-between items-end">
           <p className="text-xl font-bold ">Suggested for you</p>
           <Link to={"/friends/suggestions"}>
-            <p className="text-[#aaa] cursor-pointer">All</p>
+            <p className="text-[#aaa] cursor-pointer pr-2 lg:pr-0">
+              All
+            </p>
           </Link>
         </div>
         <div className=" flex flex-col gap-2 h-full overflow-hidden overflow-y-scroll pr-4">
@@ -131,11 +134,13 @@ const LeftBar = () => {
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-4 w-[280px] h-2/5 bg-white mt-6 rounded-2xl py-2 px-4 mx-auto">
+      <div className="flex flex-col gap-4 w-[240px] lg:w-[280px] xl:w-[300px]  h-2/5 bg-white mt-6 rounded-2xl py-2 pl-2 lg:px-4 mx-auto">
         <div className="flex justify-between items-end">
           <p className="text-xl font-bold ">Friend Requests</p>
-          <Link to={"/friends/yourRequests"}>
-            <p className="text-[#aaa] cursor-pointer">All</p>
+          <Link to={"/friends/friendRequest"}>
+            <p className="text-[#aaa] cursor-pointer pr-2 lg:pr-0">
+              All
+            </p>
           </Link>
         </div>
         {friendRequest?.length === 0 && (

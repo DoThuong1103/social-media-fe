@@ -22,16 +22,32 @@ const Files = ({ files, deleteFile }) => {
             </div>
           </div>
         ) : file?.type?.includes("video") ? (
-          <video
-            src={file.link}
-            alt=""
-            controls
-            className="h-full w-full "
-          />
+          <div className="relative w-52  min-w-[80px] ">
+            <video
+              src={file.link}
+              alt=""
+              controls
+              className="h-full w-full "
+            />
+            <div
+              className="absolute top-0 right-0 cursor-pointer rounded-full bg-slate-100 bg-opacity-25 hover:bg-slate-200 hover:bg-opacity-100 transition-all"
+              onClick={() => deleteFile(file.name)}
+            >
+              <AiOutlineClose />
+            </div>
+          </div>
         ) : (
-          <span className="bg-[#b4b3b3] px-2 py-1 rounded-md order-1">
-            {file.name}
-          </span>
+          <div className="relative mt-4">
+            <span className="bg-[#b4b3b3] px-2 py-1 rounded-md order-1">
+              {file.name}
+            </span>
+            <div
+              className="absolute -top-[10px] right-0 cursor-pointer rounded-full bg-slate-100 bg-opacity-25 hover:bg-slate-200 hover:bg-opacity-100 transition-all"
+              onClick={() => deleteFile(file.name)}
+            >
+              <AiOutlineClose />
+            </div>
+          </div>
         )
       )}
     </div>

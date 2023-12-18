@@ -18,7 +18,7 @@ const Time = ({ times }) => {
       ? Math.round((now - time) / day) + "d"
       : dayjs(new Date(times)).format("DD/MM/YYYY");
 
-  return <div className="text-xs text-[#aaa]">{timePost}</div>;
+  return <div className="text-[10px] text-[#aaa]">{timePost}</div>;
 };
 
 export default Time;

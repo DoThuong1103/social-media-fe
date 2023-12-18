@@ -13,6 +13,10 @@
   }
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -51,9 +55,9 @@
   background: transparent;
 }
 
-::-webkit-scrollbar-track:hover {
+/* ::-webkit-scrollbar-track:hover {
   background: #888;
-}
+} */
 
 /* Handle */
 ::-webkit-scrollbar-thumb {

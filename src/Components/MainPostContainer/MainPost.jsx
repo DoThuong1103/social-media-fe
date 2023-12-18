@@ -33,26 +33,23 @@ const MainPost = () => {
   useEffect(() => {
     if (
       heightPost > 0 &&
-      scrollLength + 500 > heightPost &&
+      scrollLength + 1000 > heightPost &&
       !isFetching
     ) {
       showMorePosts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollLength, heightPost]);
-
   const getPost = async () => {
     setIsFetching(true);
     try {
       let res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/post/allPost`,
+        `${process.env.REACT_APP_BACK_END_URL}/post/allPost`,
         {
           params: {
             page: visiblePosts || 1,
-            pageSize: 5,
+            pageSize: 10,
           },
-        },
-        {
           headers: {
             token: userDetails.accessToken,
           },
@@ -93,10 +90,11 @@ const MainPost = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   return (
-    <div className="flex flex-col gap-4 pb-8 md:flex-1 w-full max-w-[650px] md:mx-auto">
+    <div className="flex flex-col gap-4 pb-8 md:flex-1 w-full max-w-[650px] 3xl:max-w-[800px] mx-auto">
       <ContentPost getPost={getPost} />
-      <div className="flex flex-col gap-4 w-full pt-2" ref={divRef}>
+      <div className="flex flex-col gap-4 w-full" ref={divRef}>
         {posts?.result?.map((post) => {
           return (
             <PostContainer
@@ -106,8 +104,8 @@ const MainPost = () => {
             />
           );
         })}
+        {isFetching && <PostLoading />}
       </div>
-      {!isFetching && <PostLoading />}
     </div>
   );
 };
