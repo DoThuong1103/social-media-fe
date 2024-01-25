@@ -125,7 +125,6 @@ const Navbar = () => {
       window.location.reload();
     }
   };
-  console.log(window.location.pathname);
   return (
     <div className="fixed top-0 h-18 md:h-16 flex flex-col w-full bg-white rounded-b-xl z-50 p-2 md:px-4 lg:px-8 ">
       <div className="flex justify-between items-center text-left w-full md:hidden">

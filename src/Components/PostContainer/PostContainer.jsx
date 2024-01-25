@@ -38,7 +38,6 @@ const PostContainer = ({ post, index }) => {
   const [loading, setLoading] = useState(false);
 
   const videoRef = React.useRef(null);
-  console.log(index);
   let params = useParams();
   // eslint-disable-next-line no-unused-vars
   const { org, "*": splat } = params;
@@ -161,14 +160,13 @@ const PostContainer = ({ post, index }) => {
 
   const handleVideoLoadedData = () => {
     setLoading(false);
-    console.log("Dữ liệu video đã được tải thành công.");
   };
 
   const handleVideoLoadStart = () => {
     setLoading(true);
-    console.log("Bắt đầu tải dữ liệu video.");
   };
 
+  // commit
   return (
     <div>
       <div className="w-full mx-auto bg-white rounded-lg p-3 pb-0">
