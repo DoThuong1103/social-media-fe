@@ -7,8 +7,8 @@ import { returnLogin } from "../../Redux/userReducer";
 const Login = () => {
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.user);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
 
   useEffect(() => {
     if (error) {
@@ -19,7 +19,7 @@ const Login = () => {
   }, [error]);
   const handleLogin = async (e) => {
     if (password && email) {
-      e.preventDefault();
+      // e.preventDefault();
       await login(dispatch, { email, password });
     }
   };

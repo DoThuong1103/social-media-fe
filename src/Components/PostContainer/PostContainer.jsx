@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { tailspin } from "ldrs";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import ImagesContainer from "../CommonComponents/Img/ImagesContainer";
@@ -15,11 +15,14 @@ import { TbMessageCircle2 } from "react-icons/tb";
 import ShareIcon from "../../Images/share.png";
 import MoreOption from "../../Images/more.png";
 import { FaHeart } from "react-icons/fa6";
+import coverImage from "../../Images/groups-default.png";
+import VisibilitySensor from "react-visibility-sensor";
+import { IoWarningOutline } from "react-icons/io5";
 tailspin.register();
 
 // Default values shown
 
-const PostContainer = ({ post }) => {
+const PostContainer = ({ post, index }) => {
   const userDetails = useSelector((state) => state.user);
   const userId = userDetails.user._id;
   const accessToken = userDetails.accessToken;
@@ -30,6 +33,16 @@ const PostContainer = ({ post }) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoadLike, setIsLoadLike] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const videoRef = React.useRef(null);
+  let params = useParams();
+  // eslint-disable-next-line no-unused-vars
+  const { org, "*": splat } = params;
+  const groupId =
+    splat?.includes("group/detail") && splat?.split("/")[1];
 
   const toggleText = () => {
     setIsExpanded(!isExpanded);
@@ -38,7 +51,7 @@ const PostContainer = ({ post }) => {
     if (!like) {
       setIsLoadLike(true);
       await fetch(
-        `${process.env.REACT_APP_BASE_URL}/post/${post._id}/like`,
+        `${process.env.REACT_APP_BACK_END_URL}/post/${post._id}/like`,
         {
           method: "PUT",
           headers: {
@@ -53,7 +66,7 @@ const PostContainer = ({ post }) => {
     } else {
       setIsLoadLike(true);
       await fetch(
-        `${process.env.REACT_APP_BASE_URL}/post/${post._id}/dislike`,
+        `${process.env.REACT_APP_BACK_END_URL}/post/${post._id}/dislike`,
         {
           method: "PUT",
           headers: {
@@ -75,7 +88,7 @@ const PostContainer = ({ post }) => {
     cmtMain,
   }) => {
     const res = await axios.put(
-      `${process.env.REACT_APP_BASE_URL}/post/comment`,
+      `${process.env.REACT_APP_BACK_END_URL}/post/comment`,
       {
         postId: postId,
         userId: userId,
@@ -98,42 +111,156 @@ const PostContainer = ({ post }) => {
     setIsShowComment(!isShowComment);
   };
 
+  const TextWithLinks = ({ data }) => {
+    const MAX_LINK_LENGTH = 100;
+    // Sử dụng biểu thức chính quy để tìm liên kết trong văn bản
+    const textWithLinks = data?.title?.replace(
+      /(https?:\/\/[^\s]+)/g,
+      (url) => {
+        const displayText =
+          url.length > MAX_LINK_LENGTH
+            ? `${url.slice(0, MAX_LINK_LENGTH)}...`
+            : url;
+        return `<a href="${url}" target="_blank" class = "text-[#0861F2]">${displayText}</a>`;
+      }
+    );
+
+    // Sử dụng dangerouslySetInnerHTML để hiển thị HTML được tạo động
+    return (
+      <div
+        className="w-full"
+        dangerouslySetInnerHTML={{ __html: textWithLinks }}
+      />
+    );
+  };
+  // useEffect(() => {
+  //   // Thực hiện scroll ngay khi component được render lần đầu tiên
+  //   window.scrollTo(0, 1);
+  // }, []);
+
+  useEffect(() => {
+    if (window.scrollY > 5 && !error && !loading) {
+      if (isVisible) {
+        videoRef?.current?.play();
+      } else {
+        videoRef?.current?.pause();
+      }
+    }
+  }, [isVisible, loading, error]);
+
+  let vid = document.getElementById("firstVideo");
+  setTimeout(() => {
+    vid?.play();
+  }, 1000);
+
+  const handleVideoError = () => {
+    setError(true);
+    setLoading(false);
+  };
+
+  const handleVideoLoadedData = () => {
+    setLoading(false);
+  };
+
+  const handleVideoLoadStart = () => {
+    setLoading(true);
+  };
+
+  // commit
   return (
     <div>
       <div className="w-full mx-auto bg-white rounded-lg p-3 pb-0">
         <div className="flex flex-col gap-4">
-          <Link
-            to={`/profile/${post.user._id}`}
-            className="flex gap-2 items-center"
-          >
-            {post.user?.avatar ? (
-              <ProfileImg
-                src={post.user?.avatar}
-                size="medium"
+          {post?.group && !groupId ? (
+            <div className="flex gap-2 items-center">
+              <Link
+                to={`/groups/detail/${post?.group?._id}`}
+                className="flex "
+              >
+                <ProfileImg
+                  src={post?.group?.coverImage || coverImage}
+                  size="medium1"
+                />
+              </Link>
+              <div className="flex items-center justify-between w-full flex-1">
+                <div className="flex flex-col">
+                  <Link
+                    to={`/groups/detail/${post?.group?._id}`}
+                    className="flex gap-2 justify-between items-center"
+                  >
+                    <p className=" font-semibold">
+                      {post?.group?.groupName?.length > 20 ? (
+                        <>{post?.group?.groupName?.slice(0, 20)}...</>
+                      ) : (
+                        post?.group?.groupName
+                      )}
+                    </p>
+                  </Link>
+                  <Link
+                    to={`/profile/${post?.user?._id}`}
+                    className="flex gap-2 items-center"
+                  >
+                    {post.user?.avatar ? (
+                      <ProfileImg src={post?.user?.avatar} alt="" />
+                    ) : (
+                      <ProfileImg
+                        src={UserImg}
+                        size="medium"
+                        alt=""
+                      />
+                    )}
+
+                    <div>
+                      <p className="text-xs text-[#aaa]">
+                        {post?.user?.username}
+                      </p>
+                      <Time times={post?.createdAt}></Time>
+                    </div>
+                  </Link>
+                </div>
+                <img
+                  src={MoreOption}
+                  className="w-5 ml-auto cursor-pointer"
+                  alt=""
+                />
+              </div>
+            </div>
+          ) : (
+            <Link
+              to={`/profile/${post.user._id}`}
+              className="flex gap-2 items-center"
+            >
+              {post.user?.avatar ? (
+                <ProfileImg
+                  src={post.user?.avatar}
+                  size="medium"
+                  alt=""
+                />
+              ) : (
+                <ProfileImg src={UserImg} size="medium" alt="" />
+              )}
+
+              <div>
+                <p>{post?.user?.username}</p>
+                <Time times={post?.createdAt}></Time>
+              </div>
+              <img
+                src={MoreOption}
+                className="w-5 ml-auto cursor-pointer"
                 alt=""
               />
-            ) : (
-              <ProfileImg src={UserImg} size="medium" alt="" />
-            )}
+            </Link>
+          )}
 
-            <div>
-              <p>{post?.user?.username}</p>
-              <Time times={post?.createdAt}></Time>
-            </div>
-            <img
-              src={MoreOption}
-              className="w-5 ml-auto cursor-pointer"
-              alt=""
-            />
-          </Link>
-          <div>
-            <p
-              className={`${
+          <div className="flex flex-col items-start w-full">
+            <div
+              className={`w-full ${
                 post?.title?.length > 200 ? "line-clamp-3" : ""
               }   ${isExpanded ? "line-clamp-none" : ""}`}
             >
-              {post.title}
-            </p>
+              <TextWithLinks data={post} />
+              {/* {post.title} */}
+            </div>
             <button
               className={` hover:underline text-sm ${
                 post?.title?.length > 200 ? "block" : "hidden"
@@ -144,19 +271,50 @@ const PostContainer = ({ post }) => {
             </button>
           </div>
           <div className="">
-            {post.images && (
-              <ImagesContainer
-                post={post}
-                images={post?.images}
-                handleComment={handleComment}
-                comments={comments}
-                setShow={true}
-              />
+            {post?.images.length > 0 && (
+              <div className="min-h-[200px]  md:min-h-[300px]">
+                <ImagesContainer
+                  post={post}
+                  images={post?.images}
+                  handleComment={handleComment}
+                  comments={comments}
+                  setShow={true}
+                />
+              </div>
             )}
             {post?.video && (
-              <video className="w-full h-full rounded-sm" controls>
-                <source src={`${post?.video}`} type="video/mp4" />
-              </video>
+              <VisibilitySensor
+                onChange={(isVisible) => setIsVisible(isVisible)}
+              >
+                <div>
+                  {error && (
+                    <div className="relative flex justify-center items-center w-full h-full max-h-[500px] rounded-sm bg-black">
+                      <video className="w-full h-full max-h-[500px] rounded-sm"></video>
+                      <div className="absolute flex gap-2 items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white z-10">
+                        <IoWarningOutline />{" "}
+                        <span>Có lỗi xảy ra khi phát video.</span>
+                      </div>
+                    </div>
+                  )}
+                  {!error && (
+                    <video
+                      className="w-full h-full max-h-[500px] rounded-sm"
+                      controls
+                      muted={index === 0 ? true : false}
+                      autoPlay={index === 0 ? true : false}
+                      onError={handleVideoError}
+                      onLoadStart={handleVideoLoadStart}
+                      onLoadedData={handleVideoLoadedData}
+                      ref={videoRef}
+                    >
+                      <source
+                        src={`${post?.video}`}
+                        type="video/mp4"
+                      />
+                    </video>
+                  )}
+                </div>
+              </VisibilitySensor>
             )}
           </div>
           <div className="flex md:hidden justify-between items-center">

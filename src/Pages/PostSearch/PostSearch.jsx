@@ -17,7 +17,7 @@ const PostSearch = () => {
     setIsFetching(true);
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/post/${id}`,
+        `${process.env.REACT_APP_BACK_END_URL}/post/${id}`,
         {
           headers: {
             token: userDetails.accessToken,

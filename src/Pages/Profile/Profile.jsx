@@ -36,7 +36,7 @@ const Profile = () => {
     setIsFetching(true);
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/profile/${id}`
+        `${process.env.REACT_APP_BACK_END_URL}/user/profile/${id}`
       );
       setProfileUser(res.data);
       setIsFetching(false);
@@ -107,7 +107,7 @@ const Profile = () => {
               (downloadURL) => {
                 axios
                   .put(
-                    `${process.env.REACT_APP_BASE_URL}/user/updateProfile`,
+                    `${process.env.REACT_APP_BACK_END_URL}/user/updateProfile`,
                     {
                       avatar: avatar
                         ? downloadURL
@@ -150,7 +150,7 @@ const Profile = () => {
   const handleReqFriend = async (params) => {
     try {
       await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/user/${params}/${id}`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/${params}/${id}`,
         {},
         {
           headers: {
@@ -187,7 +187,7 @@ const Profile = () => {
       <div className="flex flex-col justify-center mx-auto pt-16 w-11/12">
         <div className="relative flex flex-col gap-6 w-full lg:w-5/6 mx-auto">
           <div className="w-full">
-            <div className="relative flex w-full h-60 md:h-96 mx-auto">
+            <div className="relative flex w-full h-60 md:h-96 mx-auto rounded-t-md overflow-hidden">
               <div className="flex w-full">
                 {isUpload ? (
                   <div className="absolute top-0 left-0 flex justify-center items-center w-full h-full bg-slate-300 opacity-40 z-10">
@@ -203,7 +203,8 @@ const Profile = () => {
                   <img
                     loading="lazy"
                     id="yourElementId"
-                    className={`opacity-100 object-cover rounded-t-md w-full`}
+                    className={`opacity-100 object-cover w-full`}
+                    style={{ objectPosition: "center center" }}
                     src={profileUser?.coverImage}
                     alt=""
                   />
@@ -229,7 +230,7 @@ const Profile = () => {
                 </label>
               )}
             </div>
-            <div className="relative flex items-end pb-2 pl-2 md:pb-0 md:pl-0 md:items-center md:justify-end bg-white w-full h-28 md:h-24 rounded-b-lg pr-10">
+            <div className="relative flex items-end pb-2 pl-2 md:pb-0 md:pl-0 md:items-center md:justify-end bg-white w-full h-28 md:h-24 rounded-b-lg pr-10 z-20">
               <div className="absolute -top-8 left-2 lg:-top-20 lg:left-6 flex gap-4 items-end">
                 <div className="relative">
                   <ProfileImg
@@ -297,7 +298,7 @@ const Profile = () => {
               )}
             </div>
           </div>
-          <div className="flex flex-col md:flex-row justify-between mx-auto w-full md:gap-8">
+          <div className="flex flex-col md:flex-row justify-between mx-auto w-full md:gap-4 lg:gap-8">
             <ProfileLeftBar />
             <ProfileMainPost />
           </div>

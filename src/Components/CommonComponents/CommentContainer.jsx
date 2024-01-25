@@ -30,76 +30,82 @@ const CommentContainer = ({
     setVisibleComments(visibleComments + 5);
   };
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex gap-3">
-        <ProfileImg src={comment.user.avatar} size="medium" alt="" />
-        <div className="flex flex-1 flex-col items-start gap-3 ">
-          <div className="flex flex-col gap-1">
-            <div>
-              <div className="flex flex-col w-fit bg-slate-200 px-2 py-[4px] rounded-2xl">
-                <p className="font-semibold">
-                  {comment.user.username}
+    <div className=" flex flex-col gap-3">
+      <div className="flex flex-col gap-1">
+        <div className="flex gap-3">
+          <ProfileImg
+            src={comment.user.avatar}
+            size="medium"
+            alt=""
+          />
+          <div className="flex flex-1 flex-col items-start gap-3 ">
+            <div className="flex flex-col gap-1">
+              <div>
+                <div className="flex flex-col w-fit bg-slate-200 px-2 py-[4px] rounded-2xl">
+                  <p className="font-semibold">
+                    {comment.user.username}
+                  </p>
+                  <p>{comment.comment}</p>
+                </div>
+              </div>
+              <div className="flex flex-1  gap-2">
+                <p
+                  className="text-[#aaa] cursor-pointer text-xs"
+                  onClick={() => setShowReply(!showReply)}
+                >
+                  Reply
                 </p>
-                <p>{comment.comment}</p>
+                <Time times={comment.createdAt} />
+
+                <p
+                  className={`${
+                    comment?.replies?.length > 0 ? "block" : "hidden"
+                  } text-[#aaa] cursor-pointer text-xs`}
+                  onClick={() =>
+                    setShowCommentsReply(!showCommentsReply)
+                  }
+                >
+                  {showCommentsReply ? (
+                    <div className="flex items-center gap-[1px]">
+                      <span>Hidden</span>
+                      <MdKeyboardArrowUp />
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-[1px]">
+                      <span>Show more</span>
+                      <MdKeyboardArrowDown />
+                    </div>
+                  )}
+                </p>
               </div>
             </div>
-            <div className="flex flex-1  gap-2">
-              <p
-                className="text-[#aaa] cursor-pointer text-xs"
-                onClick={() => setShowReply(!showReply)}
-              >
-                Reply
-              </p>
-              <Time times={comment.createdAt} />
-
-              <p
-                className={`${
-                  comment?.replies?.length > 0 ? "block" : "hidden"
-                } text-[#aaa] cursor-pointer text-xs`}
-                onClick={() =>
-                  setShowCommentsReply(!showCommentsReply)
-                }
-              >
-                {showCommentsReply ? (
-                  <div className="flex items-center gap-[1px]">
-                    <span>Hidden</span>
-                    <MdKeyboardArrowUp />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-[1px]">
-                    <span>Show more</span>
-                    <MdKeyboardArrowDown />
-                  </div>
-                )}
-              </p>
-            </div>
           </div>
-          {showReply && (
-            <div className="flex w-full items-center px-2 py-2 rounded-lg flex-1 bg-slate-200 transition-all">
-              <input
-                className="w-full outline-none bg-transparent"
-                type="text"
-                placeholder="Write your comment"
-                value={commentWriting}
-                onChange={(e) => setCommentWriting(e.target.value)}
-              />
-              <AiOutlineSend
-                className={`text-2xl cursor-pointer `}
-                onClick={() => {
-                  handleComment({
-                    postId: postId,
-                    userId: userId,
-                    userIdCmt: comment?.user?._id,
-                    cmtMain: comment?._id,
-                    comment: commentWriting,
-                  });
-                  setCommentWriting("");
-                  setShowCommentsReply(true);
-                }}
-              />
-            </div>
-          )}
         </div>
+        {showReply && (
+          <div className="flex w-full items-center px-2 py-2 rounded-lg flex-1 bg-slate-200 transition-all">
+            <input
+              className="w-full outline-none bg-transparent"
+              type="text"
+              placeholder="Write your comment"
+              value={commentWriting}
+              onChange={(e) => setCommentWriting(e.target.value)}
+            />
+            <AiOutlineSend
+              className={`text-2xl cursor-pointer `}
+              onClick={() => {
+                handleComment({
+                  postId: postId,
+                  userId: userId,
+                  userIdCmt: comment?.user?._id,
+                  cmtMain: comment?._id,
+                  comment: commentWriting,
+                });
+                setCommentWriting("");
+                setShowCommentsReply(true);
+              }}
+            />
+          </div>
+        )}
       </div>
       {showCommentsReply && (
         <div className="pl-4 flex flex-col gap-3">

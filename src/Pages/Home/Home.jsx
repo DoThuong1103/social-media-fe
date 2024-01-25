@@ -8,12 +8,12 @@ const Home = () => {
   return (
     <div className="bg-slate-200 min-h-screen scroll-smooth">
       <Navbar />
-      <div className="flex md:justify-between mx-auto px-2 md:px-0 pt-20 w-full lg:w-[92%] gap-8">
+      <div className="flex md:justify-between mx-auto px-2 md:px-4 lg:px-0 pt-20 w-full lg:w-[92%] md:gap-4">
         <div className="hidden md:block sticky top-20">
           <LeftBar />
         </div>
         <MainPost />
-        <div className="hidden md:block sticky top-20 w-1/5">
+        <div className="hidden md:block sticky top-20 md:w-1/5">
           <RightBar />
         </div>
       </div>

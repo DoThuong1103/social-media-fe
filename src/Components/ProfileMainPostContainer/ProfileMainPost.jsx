@@ -54,7 +54,7 @@ const ProfileMainPost = () => {
     setIsFetching(true);
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/post/userPost/${id}`,
+        `${process.env.REACT_APP_BACK_END_URL}/post/userPost/${id}`,
         {
           params: {
             page: page || visiblePosts || 1,
@@ -101,18 +101,23 @@ const ProfileMainPost = () => {
   }, []);
 
   return (
-    <div className="flex flex-col flex-1 gap-8">
-      <div className="w-full mx-auto">
-        {id === userDetails.user._id && (
+    <div className="flex flex-col gap-6 w-full">
+      {id === userDetails.user._id && (
+        <div className="w-full mx-auto">
           <ContentPost getPost={getPost} />
+        </div>
+      )}
+      <div className="flex flex-col gap-4 w-full" ref={divRef}>
+        {!isFetching && posts && posts?.result?.length === 0 && (
+          <div className="text-center font-semibold text-2xl">
+            No posts found
+          </div>
         )}
-      </div>
-      <div className="flex flex-col gap-4" ref={divRef}>
         {posts?.result?.map((post, index) => (
           <PostContainer key={post._id} post={post} />
         ))}
+        {isFetching && <PostLoading />}
       </div>
-      {isFetching && <PostLoading />}
     </div>
   );
 };

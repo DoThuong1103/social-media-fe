@@ -8,7 +8,7 @@ export default function Verifyemail() {
   const [OTP, setOTP] = useState("");
   const user = useSelector((state) => state.user);
   const userDetails = user.user;
-  const id = userDetails?.user;
+  const id = userDetails?._id;
 
   const handleOTP = (e) => {
     e.preventDefault();

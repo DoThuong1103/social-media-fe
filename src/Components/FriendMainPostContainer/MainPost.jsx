@@ -18,7 +18,7 @@ const MainPost = () => {
     setIsFetching(true);
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/user/${
+        `${process.env.REACT_APP_BACK_END_URL}/user/${
           splat === "" ? `allFriend/${userDetails?.user?._id}` : splat
         }`,
         {
@@ -41,7 +41,7 @@ const MainPost = () => {
   const handleRequest = async (params) => {
     try {
       await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/user/${params}`,
+        `${process.env.REACT_APP_BACK_END_URL}/user/${params}`,
         {},
         {
           headers: {
@@ -65,7 +65,7 @@ const MainPost = () => {
       : "Your Request";
   return (
     <div
-      className="flex-1 overflow-hidden overflow-y-scroll"
+      className="flex-1 overflow-hidden overflow-y-scroll pt-4 md:pt-0"
       style={{
         maxHeight: "calc(100vh - 48px)",
         height: "calc(100vh - 48px)",
@@ -81,13 +81,15 @@ const MainPost = () => {
           ></l-tailspin>
         </div>
       )}
-      {!isFetching && (
+      {!isFetching && friends?.length > 0 && (
         <div className="w-full h-full flex flex-col p-4 gap-10">
-          <span className="font-bold text-3xl">{title}</span>
-          <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pb-8">
+          <span className="font-bold text-lg md:text-2xl lg:text-3xl">
+            {title}({friends?.length || 0})
+          </span>
+          <div className="w-full grid grid-cols-1 xsm:grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-4 pb-8">
             {friends?.map((friend, index) => (
               <div
-                className="flex flex-col first-letter:w-full h-[300px] sm:h-[360px] bg-white rounded-t-md overflow-hidden"
+                className="flex flex-col w-4/5 mx-auto xsm:w-full  h-[300px] sm:h-[360px] bg-white rounded-t-md overflow-hidden"
                 key={index}
               >
                 <img
@@ -97,11 +99,11 @@ const MainPost = () => {
                 />
                 <div className="flex flex-col flex-1 p-2">
                   <div>
-                    <span className="font-semibold text-lg">
+                    <span className="font-semibold text-base md:text-lg">
                       {friend.username}
                     </span>
                     {friend?.mutualFriends?.length > 0 && (
-                      <span>
+                      <span className="text-sm md:text-base">
                         ({friend?.mutualFriends?.length} mutual)
                       </span>
                     )}
@@ -112,7 +114,7 @@ const MainPost = () => {
                         splat === "yourRequests" || splat === ""
                           ? "hidden"
                           : "block"
-                      } w-full text-center bg-[#0861F2] py-[3px] hover:bg-opacity-80 text-white transition-all cursor-pointer rounded`}
+                      } w-full text-center bg-[#0861F2] py-[3px] hover:bg-opacity-80 text-white transition-all cursor-pointer rounded text-base md:text-lg`}
                       onClick={() =>
                         handleRequest(
                           splat === "friendRequest"
@@ -160,6 +162,13 @@ const MainPost = () => {
               </div>
             ))}
           </div>
+        </div>
+      )}
+      {friends?.length === 0 && (
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="text-2xl text-[#aaa] font-semibold">
+            No {title === "All Friends" ? "friends" : title}
+          </span>
         </div>
       )}
     </div>
